@@ -1,0 +1,92 @@
+export const meta = {
+    title: 'Rise of Monolith I',
+    tags: ['monolith', 'programming', 'web'],
+}
+
+**Monolith** is my new blog/wiki/knowledge base/thought-dump, built using Ghost as a headless CMS and Next.JS as a static site generator. My goal with **Monolith** was firstly to work out how to set up a static site generator/CMS combo, and secondly to start having a place online to put information about the thing I am working on and/or thinking about, and hopefully also encourage myself to write some more longform content about the aforementioned.
+
+## Stack
+
+Even given the expansive list of headless CMSs from [Jamstack](https://jamstack.org/headless-cms/), picking which one to use was a struggle. These were the main things I was looking for:
+
+1. **Focus on writing** – Monolith doesn't need many different content types, but it does need to allow for easy editing and authoring of blog-like posts.
+2. **Good UI** – I'm picky about UI. That means nothing "janky" looking, nothing that looks too much like Bootstrap, and also (and this is admittedly only personal personal preference and not a value judgement on the system) nothing which looks too much like Material Design.
+3. **Sensible JSON output** – if I'm processing the data with a static site generator, I want to have that data to process how I want. Ideally, this means a post is just an array of blocks, each serialized as a JSON object, where each block can be, for example, an image block, or a text block, or an embed block.
+4. **Extensibility** – I should be able to add custom data to a post, or create new block types.
+
+Many of the tools which had **3** expressly did not have **1**. I found some tools which seemed great for other sites, but the workflow for actually creating a blog and all the content types implied by that would have been too much of a hassle. Actually, not many tools had **1** at all. Similarly, there were quite a lot which just didn't hit the mark on **2**, and my interest in those was dashed the moment I saw a screenshot of them.
+
+After filtering out many of them, I came to realise that the customisation of **4** seemed to be precluded by the focused goals of **1**. Instead, I mostly found people suggesting that I should use Wordpress instead.
+
+Ultimately, Ghost won out, almost solely based on points **1** and **2**. I sacrificed my pursuit of **4**, since I do kind of accept that it's just based on my desire to mess around and tweak stuff and make it more complicated than it needs to be. And thus we get to the reason for this whole section: time for me to complain about the way Ghost handles **3**, its output.
+
+Not tying your presentation to the CMS allows you a huge amount of freedom in how you design and write your front-end code. It means you aren't restricted to just styling whatever content the CMS outputs, but you can create your own ways of structuring and displaying your content... except oh no wait you're not because all you get from Ghost is just a big blob of HTML which is expects you to just dump into a div and deal with it. Why go through the trouble of making a headless CMS when you are just going to output what is essentially just a Markdown➞HTML conversion? You can go decently far styling rendered Markdown, but when all the elements are just siblings, you reach a point where you have no further tools to control layout and structure.
+
+> **EDIT**: looking deeper into the API, it seems that I can also get the data out in a more structured format called mobiledoc, but only using Ghost's Admin API – the Content API will only return HTML or plain text. For my use, this isn't an issue, since the API is only called on build and so will still be secure, but information on how mobiledoc actually works seems a bit sparse.
+
+Bereft of any nicely structured content data to play with from Ghost, the only thing left to do was to hack it. The hack starts by parsing the HTML blob into a DOM element using jsdom. Here, at least, we can take advantage of the sibling-ness of rendered Markdown by looping through all the top level elements of that DOM element, and converting each element into a JSON object we can consume later:
+
+```js
+function getElements(post) {
+    let elements = []
+
+    let body = /* jsdom-parsed html */.body
+    for(let element of body.childNodes) {
+        let parsed = getElement(element)
+
+        if(parsed) {
+            elements.push(parsed)
+        } 
+    }
+
+    return elements
+}
+```
+
+We don't really have to care about nested elements aside from lists. To deal with lists: when we encounter a ul or ol tag, we can just loop through its children in the exact same way as above. This strategy will leave us with an object which is structured like this:
+
+```js
+[
+    { tag: 'h1', content: 'Some <em>Title</em>' },
+    { tag: 'p', attributes: { style: 'color: hotpink' }, content: 'Lorem ipsum dolor sit amet, consectetur...' },
+    { tag: 'figure', content: '<img src="https://example.com/image.jpg' },
+    ...
+]
+```
+
+The content value here is still a HTML blob, but we don't really mind about manipulating each individual element that much, so we can leave it at that. If we did want to start messing with elements in more detail, we can just simply parse that content value with jsdom again and start extracting data using the DOM functions we're already used to.
+
+The second step is to consume the data that's just been created to generate the React front-end structure. In the template, we loop through each item in the array of blocks...
+
+```js
+<section className={ `ghost-content ${styles.content}`}>
+	{ props.elements.map(renderElement) }
+</section>
+```
+			
+...and render that block out, with a different template depending on its tag:
+
+```js
+function renderElement(element) {
+    switch(element.tag) {
+        case 'ol': return <ol {...element.attributes}>
+                { element.children.map(renderElement) }
+            </ol>
+        case 'ul': return <ul {...element.attributes}>
+                { element.children.map(renderElement) }
+            </ul>
+            case 'hr': return <hr />
+            default:
+                let Tag = element.tag
+                return <Tag key={ index } { ...element.attributes } dangerouslySetInnerHTML={ element.content } />
+    }
+}
+```
+
+(who knew you could dynamically change the tag of a JSX element based on a string!?)
+
+---
+
+If writing this hack had taken me much longer than it did, I probably would have been going back to the Jamstack mines to try to find another CMS which could match my needs (in fact, I did have a small crisis of faith after realising this code was necessary, and discovered, and was almost coaxed in by, [forestry.io](https://forestry.io/)). That said, I'm not really disappointed in Ghost past its API failings. The editing experience seems nice, and the CMS itself is really pretty.
+
+Also, this project involved setting up an EC2 instance for Ghost itself, as well as working out how to deploy the static site somewhere, with auto-redeploy when something changes in the CMS. I used [Vercel](https://vercel.com) (formerly Zeit) for the latter, and it was a dream – in no small part because they created NextJS and have first class support for projects created in it. Even considering that, I was still not expecting it to be so seamless. As for the former... it really just made me wish that either some other company would appear and do everything AWS does but cleaner and less confusing, or that the whole of AWS would just go through a huge design and usability pass. I mean, what the fuck is [this](https://calculator.s3.amazonaws.com/index.html)?

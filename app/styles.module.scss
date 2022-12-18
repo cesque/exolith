@@ -1,0 +1,30 @@
+.post {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 40px;
+
+    a {
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+    }
+}
+
+.date {
+    margin-bottom: 5px;
+}
+
+.tags {
+    display: flex;
+    gap: 4px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tag {
+    padding: 2px 12px;
+    border-radius: 100vw;
+    background: #e74c3c;
+    color: white;
+    font-weight: 500;
+}

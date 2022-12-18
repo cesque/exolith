@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            // "@/markdownComponents/*": [ "./markdownComponents/*" ],
+            // "@/components/*": [ "./components/*" ],
+            "@/*": [ "./*" ],
+        }
+    }
+}

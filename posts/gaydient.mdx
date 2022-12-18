@@ -1,0 +1,91 @@
+export const meta = {
+    title: 'gaydient',
+    tags: ['programming', 'lgbt', 'web'],
+}
+
+**gaydient** is a web page for copying CSS linear gradients of a variety of different LGBT+ pride flags.
+
+<Image src="https://cesque.com/storage/22/11/20/351020179413.png" full />
+
+The site concept occurred to me when I was looking for a rainbow CSS linear gradient. I tried the obvious answer – `linear-gradient(to right, red, yellow, orange, green, blue, purple)` – but wasn't too happy with it, so I headed to Stack Overflow. There, I found this answer by user Bartek, which proposes using more, hand-picked, colour stops to achieve the rainbow gradient in a more aesthetically pleasing manner. It would be unfeasible to work this gradient out every time, however, so I imagined a site with the gradient pre-generated, ready to copy, and quickly extrapolated that out to other pride flags.
+
+Once I got started making the site, I quickly realised an issue: CSS gradients can get really ugly. They use RGB interpolation to calculate the colours between stops of the gradient, which means that for each of the red, green and blue values, the resultant value is `(valueAtStop1 + valueAtStop2) * percentageBetweenStops`. This seems like an obvious way of doing it, and usually works fine enough, but can result in some ugly gradients with certain colour combinations. For example the first gradient in the image below shows a red to blue gradient with RGB interpolation. You can see that the colour in the middle, a blend of red and blue, is not purple (as might be expected), but a kind of muddy grey-ish colour.
+
+<Image src="https://cesque.com/storage/22/11/20/650397403041.png" caption="RGB interpolation (top) versus HSL interpolation (bottom)" />
+
+The second gradient in the image shows what the same gradient looks like if you convert it into HSL (hue, saturation and lightness) and then interpolate those values instead. The saturation and lightness between the red and blue colours is similar, so the movement is mostly in hue, resulting in a prettier gradient which passes through purple.
+
+I tried a couple of different colour spaces for this and HSL worked the best, but HSV was also very close (not that I really understand the difference between those two anyway).
+
+Thus, in generating a 2-stop gradient between red and blue, we could instead generate a 3-stop gradient with red at one end, blue at the other, and the calculated lerped new colour in between. For gradients with more than 2 stops, we just calculate and insert a new HSL-interpolated colour in between each pair of stops.
+
+The issue that then arose was that in certain gradient stop colour combinations, the resultant colour created by mixing the two stops in HSL space could become *too* different, and create a perceived band of a new colour in between. Aesthetically, this wasn't terrible, but as the goal was to create gradients which were recognisable as different pride flags, adding new colours would cause an issue. It's entirely possible, admittedly, that my blending code was not perfect (I don't know too much about colour math!), but I found that a good fix which didn't ruin the aesthetics of other gradients was to mix the newly-created (pretty) HSL-interpolated colour with the original (ugly) RGB-interpolated colour. I settled on a 50% mix, with half HSL and half RGB colours.
+
+The issue first arose when I added the Transgender flag; a new bright purple colour appeared between the blue and pink:
+
+<Image src="https://cesque.com/storage/22/11/20/162223097033.png" caption="RGB interpolation (top), HSL interpolation (middle), 50% mix of both (bottom)" />
+
+This works well enough to prevent the purple from being overpowering. In my eyes, the gradient is still not perfect, but since it is being created by a simple algorithm and not completely hand picked, and still is pleasing enough to the eye, I think it is good enough for now. Maybe at some point in the future I will spend some time hand-tweaking some of the gradients to improve their colour mixing.
+
+Another tweak I made to some gradients was to widen the stops of particularly light colours (mostly white and yellow). This was to prevent an issue where a clear vertical band of the colour would appear when between two darker colours.
+
+<Image src="https://cesque.com/storage/22/11/20/596421497494.png" caption="No extra white stops added (top), extra white stops added at 45% and 55% (bottom)" />
+
+This probably could have been done in the gradient generation algorithm, but for the moment it is tweaked by hand; the stops of the 2nd gradient above are defined as such:
+
+```js
+"stops": [
+	{ "color": "0" },
+	{ "color": "1", "position": 45 }, // white at 45%
+	{ "color": "1", "position": 55 }, // white at 55%
+	{ "color": "2" }
+]
+```
+
+This helps to prevent the major eyesore – I think a better solution would be to implement better easing curves between stops, possible adding even more extra intermediate colours to prevent the gradient from hitting white so quickly.
+
+---
+
+Colour math aside, the gradients shown on the site are pulled from a JSON file in the source directory of the project. Each gradient has the following:
+
+- `name`: Name
+- `colors`: List of colours, in hex format (no preceding #)
+- `stops`: List of gradient stops
+
+Each stop has a `color` value, which is an indexed value into the `colors` array, and also optionally a `position` value which gives finer control over the position of each stop in the gradient, allowing for the tweaks shown above to be possible.
+
+A gradient also optionally has the following value:
+
+- `simpleStops`: For gradients which are "mirrored", such as the Transgender, Agender and Intersex flags, this defines an alternate list of stops to show the gradient in a "non-mirrored" way.
+
+This property allows for the use of the gradient in a way that maintains the colour scheme of the flag but does not strictly maintain the ordering of the colours. For example, the Transgender flag is "pink, blue, white, blue, pink", but has an alternate gradient which is simply "pink, blue, white". There is a switch on the element for gradients which have this alternate version defined to allow switching between the two variants.
+
+An example gradient from the gradients JSON file is as follows:
+
+```js
+{
+    "name": "Transgender",
+    "colors": [ "55cdfc", "f7a8b8", "ffffff" ],
+    "stops": [
+    	{ "color": "0" },
+    	{ "color": "1" },
+        { "color": "2", "position": 45 },
+        { "color": "2", "position": 55 },
+        { "color": "1" },
+        { "color": "0" }
+    ],
+    "simpleStops": [
+        { "color": "0" },
+        { "color": "1" },
+        { "color": "2" }
+    ]
+},
+```
+
+---
+
+I *did* want to set up automatic deployment, as with my other site **hierophant.app**, since it is incredibly useful. However, I ran out of steam and so settled on manual copy onto my S3 bucket for now. I'm sure that attempting to add a GitHub workflow would have ended up somehow with me deleting the whole contents of my bucket. This is a job for another day, I'm sure.
+
+---
+
+gaydient can be accessed on my website: [cesque.com/gaydient/](https://cesque.com/gaydient/). The git repo is also public and accessible on GitHub: [github.com/cesque/gaydient](https://github.com/cesque/gaydient)

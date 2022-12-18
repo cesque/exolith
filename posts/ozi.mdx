@@ -1,0 +1,61 @@
+export const meta = {
+    title: 'ozi',
+    tags: ['conlangs', 'design'],
+}
+
+**ozi** is a constructed writing system for English, taking reference from Cyrillic, Hangeul, the Latin alphabet, **Vianaic**, and geometric shapes. I designed it for aesthetic uses, as a blocky and futuristic alternative to Vianaic, but it is still easy to write as all the symbols are very simple. It also allows for some variation in how some words are written, depending on the order of letters in the word. Another design consideration was ensuring that the characters are largely the same height without ascenders or descenders, meaning it can be written on successive lines without interfering or overlapping with the line above or below.
+
+## Consonants
+
+<Image src="https://cesque.com/storage/22/11/20/041270095563.png" />
+
+Above is the consonant inventory of the script. The symbols are laid out in the order shown in the following table (either symbol can be used for *Z*, as desired).
+
+| b	| c	| d	| f	| g |
+| h	| j	| k	| l	| m |
+| n	| p	| q(u) | r | s |
+| t	| v	| w	| x	|
+| z(1) | z(2) |	
+
+Many pairs of voiced & unvoiced consonants share similar symbols. These pairs are:
+
+- *P* and *B*
+- *T* and *D*
+- *F* and *V*
+- *K* and *G*
+- *S* and *Z*
+
+Additionally, the nasal pair *M* and *N* differ only by place of articulation, and so also share similar symbols. Also worth noting is that due to the rarity of words in English which feature a *Q* not immediately followed by a *U*, the *Q* symbol always implies a following *U*, and it is not necessary to add the vowel symbol for *U* after it.
+
+## Vowels
+
+<Image src="https://cesque.com/storage/22/11/20/449178464206.png" />
+
+Above is an image showing some of the ways that vowels can be represented in **ozi**. In order, the vowels shown in the top row are *A* (two variants), *E* (two variants), *I*, *O*, and *U* (two variants). For diphthongs, the construction shown in the second row can be used; these symbols are read from bottom upwards, and so in order listed would represent *AE*, *OU* and *EA*. Note that despite there being two distinct symbols in these symbols for vowels, the only represent a single instance of the letter; the duplication mark should be used to represent double vowels in this manner.
+
+However, the more common way to show vowels is as diacritical marks above or below the consonant character listed. The way of writing these vowels is shown in the final two rows, with a placeholder character displayed for each. If a vowel is written above a consonant then the vowel follows the consonant, and if written below the vowel precedes the consonant. These diacritical marks can be stacked to indicate multiple vowels, and are read from bottom upwards. The maximum limit on stacked diacritics is at the writer's discretion, but most commonly a maximum of two vowels are added before they start being shown in their full character form. This is to prevent the text from interfering or overlapping with text above or below, as mentioned in the introduction.
+
+When writing, a mix of the full symbols and diacritics can be used based on aesthetics and ease of writing; the rules are intentionally ambiguous to allow multiple ways of writing some letter combinations based on context.
+
+## Digraphs+
+
+<Image src="https://cesque.com/storage/22/11/20/433793956294.png" />
+
+The above image shows symbols for digraphs and a couple of other writing system features. The digraphs shown are listed as follows:
+
+| th(v) | th(u) | sh | zh | ch |
+| ph | wh | ng |	
+
+There are two digraphs for *TH*, which are used for the voiced (ð) and unvoiced (θ) dental fricatives. For example, the word **this** would be written starting with ð, but the word **three** would be written starting with θ.
+
+Since these digraphs roughly represent individual phonemes (e.g. *S* representing /ʃ/) they can be 'split' if the digraph in the word does not represent the sound. For example, the S symbol could be split in the word **goshawk**. This type of splitting is almost always optional (the digraph can still be used if it works better aesthetically or for ease of writing). It is only strictly necessary when writing a word with a *TH* digraph which doesn't sound as a dental fricative – for example, the word **goatherd**. Since there is no way to choose between the two symbols for *TH* here, the word would necessarily be written using the individual characters for *T* and *H*.
+
+The 'duplication mark', written as a double quote symbol above the character, indicates that the character should be doubled. This is most common for consonants, but can be used for vowels in their single character form too. This should not be used for vowels which have been written as diacritics as it introduces some confusion over which character is being duplicated.
+
+The 'wrap vowel mark', written as a full-width tilde under a character which has a diacritic vowel, indicates that the vowel should be 'wrapped' by the consonant. This is used to prevent the same consonant symbol being repeated twice in a row. Given a consonant C and a vowel V, adding the wrap vowel mark will give a single character for the trigraph CVC. For example, the word **pop** could be written as the symbol for *P*, with a diacritic for *O*, and then the wrap vowel mark underneath.
+
+This behaviour can also optionally be used for wrapping multiple vowels, as long as they are all written as stacked diacritics above the consonant. For example, the word **dead** could be written as the symbol for *D*, with diacritics for *E* and *A*, and then the wrap vowel mark underneath.
+
+## Y
+
+A separate character for the letter *Y* is not included in ozi. Rather, the symbol for *I* should be used in its place. The only caveat is that if it is written adjacent to a letter *I*, for example in the word trying, the two letters should be 'split', most likely resulting in one becoming a single character form vowel. Alternatively, the *Y* in trying could be written as a diacritic above the *R* and the *I* can then be written as a diacritic below the *NG* digraph.
