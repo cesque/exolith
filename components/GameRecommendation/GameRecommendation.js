@@ -3,7 +3,6 @@ import React from 'react'
 import styles from './GameRecommendation.module.scss'
 
 export function GameRecommendationList({ data }) {
-    console.log(data)
     return <ul className={ styles.list }>
         { data.map(game => {
             return <GameRecommendation isInList="true" {...game} />

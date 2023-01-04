@@ -5,11 +5,13 @@ export function getMetadata(title, type) {
     let imageParams = new URLSearchParams()
     imageParams.set('title', title)
 
+    let url = process.env.VERCEL_URL ? `https://${ process.env.VERCEL_URL }` : `http://localhost:3000`
+
     let meta = {
         og: {
             title: pageTitle,
             type: type,
-            image: `${ process.env.VERCEL_URL || 'localhost:3000' }/api/og?${ imageParams.toString() }`,
+            image: `${ url }/api/og?${ imageParams.toString() }`,
             'image:width': 1000,
             'image:height': 500,
             description: description  
