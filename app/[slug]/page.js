@@ -6,6 +6,16 @@ import { H1, H2, H3, H4, H5, H6 } from '@/markdownComponents/Heading/Heading'
 import Paragraph from '@/markdownComponents/Paragraph/Paragraph'
 
 import Image from '@/components/Image/Image'
+import { GameRecommendationList } from '@/components/GameRecommendation/GameRecommendation'
+import Header from '@/components/Header/Header'
+import Code from '@/markdownComponents/Code/Code'
+import Pre from '@/markdownComponents/Pre/Pre'
+import Table from '@/markdownComponents/Table/Table'
+import YouTube from '@/components/YouTube/YouTube'
+import Bookmark from '@/components/Bookmark/Bookmark'
+import Sigil from '@/components/Sigil/Sigil'
+import Video from '@/components/Video/Video'
+import getPost from '@/utils/getPost'
 
 const dirPath = path.join(process.cwd(), 'posts/')
 
@@ -25,22 +35,10 @@ export async function generateStaticParams() {
     return posts
 }
 
-async function getPost(slug) {
-    let post = await import('../../posts/' + slug + '.mdx')
-
-    return post
-}
-
 export default async function PostPage({ params: { slug }, searchParams }) {
-    let { default: PostContent, meta } = await getPost(slug)
+    let { default: PostContent, meta, info } = await getPost(slug)
 
-    let postInfo = await fs.stat(path.join(dirPath, slug + '.mdx'))
-
-    let info = {
-        inode: postInfo.ino,
-        created: postInfo.birthtime.toISOString(),
-        modified: postInfo.mtime.toISOString(),
-    }
+    console.log(meta)
 
     let components = {
         h1: H1,
@@ -51,11 +49,25 @@ export default async function PostPage({ params: { slug }, searchParams }) {
         h6: H6,
 
         p: Paragraph,
+        code: Code,
+        pre: Pre,
+
+        table: Table,
+        Table: Table,
 
         Image,
+        GameRecommendationList,
+        YouTube,
+        Bookmark,
+        Sigil,
+        Video,
     }
 
-    return <Post slug={ slug } meta={ meta } info={ info }>
-        <PostContent components={ components } />
-    </Post>
+    return <>
+        <Header slug={ slug } />
+
+        <Post slug={ slug } meta={ meta } info={ info }>
+            <PostContent components={ components } />
+        </Post>
+    </>
 }

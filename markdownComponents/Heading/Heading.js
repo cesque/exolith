@@ -1,8 +1,8 @@
 import classNames from 'classnames'
 import styles from './Heading.module.scss'
 
-function Header({ level, children }) {
-    let classes = classNames(styles.header, styles[`header--${ level }`]);
+function Header({ level, className, children }) {
+    let classes = classNames(styles.header, styles[`header--${ level }`], className);
 
     switch(+level) {
         case 1: return <h1 className={ classes }>{ children }</h1>

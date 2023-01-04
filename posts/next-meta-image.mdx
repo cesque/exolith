@@ -1,0 +1,74 @@
+export const meta = {
+    title: 'Dynamic Meta Image with Next.js SSG',
+    tags: ['monolith', 'programming', 'web'],
+}
+
+> TLDR: draw it to a canvas, upload the contents of the canvas to a CDN, use the resultant URL as the value of the og:image meta tag.
+
+I wanted to add some Open Graph metadata to **monolith** so that when sending links to it over Discord or posting on Twitter, it would look a lot better. I also wanted to dynamically create images for each of the pages; I knew it was possible because of GitHub's new(-ish?) embed images, which were a big inspiration for making my embeds look fancy.
+
+<Image src="https://monolith.cesque.dev/content/images/2021/06/image-4.png" caption="GitHub's repo embed on twitter" />
+
+## What I tried
+
+Step 1: **Generate the embed layout using HTML** – It was clear that drawing to a canvas would provide an easier way later on to actually get the resultant image file and insert it into the meta. However, actually laying stuff out in canvas is a lot harder than throwing together some HTML and CSS and letting it lay itself properly using the same code I was already using for the rest of the site.
+
+Initially, I wanted to convert the resultant image into a base 64 data URI, similar to how the dynamic favicon on hierophant works. However, Open Graph meta images need to be not only URL, but fully qualified absolute URLs.
+
+I then planned to offer an alternate route on the post page which would return the image (`[...slug]/draft`), but before I could even deal with that, I had to generate the image itself. This proved to be trickier than I imagined.
+
+Step 2: **Convert the HTML to an image** – "There must be an npm module which converts from HTML to an image, right?" Well, yes, but what I had wasn't HTML but instead JSX. Overkill, really, because the only variable I was using was the post slug which I could have easily just templated into the raw HTML, but since I was using React for everything else, I didn't really want to mix and match. Luckily it's just an easy conversion with `ReactDOMServer.renderToStaticMarkup()` which gave me the raw HTML text. The HTML to image node modules required DOM objects, and I already was using JSDOM, so after a bit of remember how it works, I converted the HTML text to a `HTMLImageElement` and passed it through and...
+
+An empty image! I'm still not quite sure why this happened (I'm assuming something related to it being a JSDOM element and not native DOM) but it definitely threw a wrench into the works. So, what next?
+
+Step 2: **Convert the HTML to an image - using canvas** – I knew that you could convert a HTML canvas to an image, and I knew that there existed a good Node.JS canvas implementation. Therefore, all I needed to do was to find a way to render a HTML element to a canvas.
+
+This was a relatively short-lived approach. StackOverflow suggested importing it as a `<foreignObject>` in an SVG and then drawing that SVG to the canvas. However, this also resulted in a blank image. I think it didn't work because the HTML I was generated was not XML-compliant, and so wouldn't work in an SVG, but I'm not too sure about that still.
+
+Step 3: **Draw the embed directly to a canvas** – I gave up on my dream of writing HTML for the embed, and decided to draw it directly onto the canvas myself since I knew I could definitely then get that as an image. Luckily, my intended design for the embed was very simple; it was still a bit of a task getting it looking good.
+
+The only part of this that was kinda complicated was making the text wrapping work. Even that wasn't too bad. This part is mostly just tedious to do, because you have to make sure you're calculating all the positions of things yourself and keeping track of them, instead of just letting CSS do it for you. Huge props to people who write browser render engines...
+
+I did also have to download the display font I'm using in order to call `registerFont()` with the file name in order to be able to use it in the node canvas context.
+
+Step 4: **Save the canvas to an image file** – no complaints here, just simple conversion to buffer then write the buffer to a file in the `public` direction with the post slug as a file name.
+
+Step 5: **Add image URL to page meta data** – with the image file written to the `public` directory, all I needed to do was use the same filename in the meta tag in the actual template, append the correct domain for the environment to satisfy the condition that the meta image be a fully qualified URL, and then it would load the file. Testing locally, this worked perfectly, so I pushed it to Vercel...
+
+Step 6: **Cry** – In the same breath that Vercel's build log said the images were being saved, it also complained that it couldn't find them and errored out. It was hard to find information about why this was happening, since it doesn't look like many people were doing dynamic image/file generation with Next.js static site generation and Vercel. Ultimately, I think this unassuming notice on the docs page for Next.js static file serving points us towards the cause:
+
+<Image src="https://monolith.cesque.dev/content/images/2021/06/image-5.png" />
+
+
+I had seen this earlier in the process, but I assumed that since I was generating the embed images when the project was built, they would be considered to be in the `public` directory at build time. Indeed, I don't think there really is a runtime for statically generated sites, right?
+
+Now I think that this probably means they need to be in the `public` directory *before* the build begins, which is understandable probably (not that I really have any concept of how Next.js works under the hood!).
+
+It didn't seem like there was any way out of this, since my files were necessarily generated as part of the build process. After staring blankly at my screen for a few minutes, considering my life choices to become a front-end developer, I decided to capitulate to the plan which I was hoping to avoid since the start.
+
+## How it works
+
+Step 7: **Uploading the images to Cloudinary** – I had wanted to avoid uploading the files, mostly out of an expectation that it would be a really annoying process to set up. However, while searching for other things earlier on I had seen a mention of Cloudinary, and since I already had some familiarity with it I realised it could work here. I signed up and grabbed my `CLOUDINARY_URL` environment variable, adding it both to my local install (`.env.local` file, not added to source control) and to the Vercel environment.
+
+After that, it was pretty simple to upload the image to Cloudinary. I could have converted the canvas to a buffer and then a stream, and uploaded it that way, but it was easier to just convert it to a data URI and pass it in to the normal upload function.
+
+I also added a check which sees if the image already exists on Cloudinary, to prevent rewriting every image on a rebuild (though honestly maybe that's just a pointless optimisation since the free tier of Cloudinary does include quite a lot of image transformations anyway).
+
+Both of the above functions will return an object with the secure_url property, which is what I pass back to Next.js to use in the page props, and ultimately in the meta tag.
+
+The only issue I really see with this is that if I delete a post or, more likely, change its slug, then the generated image won't be deleted from Cloudinary. I don't think there's a way of knowing which image to delete if this the case, so it's probably fine to leave them there, and if it does become an issue then I can nuke the specific images from the media library.
+
+Honestly, it would be fine to delete the whole thumbnail folder on Cloudinary, since they all get regenerated on a build anyway, and there's not going to be many of them to reupload.
+
+## Bonus
+
+Now I had my metadata working, the image was showing when posting my links into Discord and Twitter! However, it didn't look quite how I expected it: the image was small, and the layout didn't match the GitHub embeds which I was attempting to emulate.
+
+<Image src="https://monolith.cesque.dev/content/images/2021/06/image-6.png" />
+
+
+This was a simple fix: add an extra meta tag with name `twitter:card` and content `summary_large_image`. Unlike the Open Graph tags, this one uses `name` rather than `property`, which is something to look out for.
+
+The finished embed, in all its glory:
+
+<Image src="https://monolith.cesque.dev/content/images/2021/06/image-7.png" />

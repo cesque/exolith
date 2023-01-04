@@ -1,20 +1,15 @@
+import { H1 } from '@/markdownComponents/Heading/Heading'
+import Footer from '../Footer/Footer'
 import styles from './Post.module.scss'
 
 export default function Post({ slug, info, meta, children }) {
     return <div className={ styles.container }>
-        <h1 className={ styles.title }>{ meta.title }</h1>
+        <H1 className={ styles.title }>{ meta.title }</H1>
+
         <article className={ styles.post }>
-
-            <div className={ styles.info }>
-                <p>
-                    { JSON.stringify(info) }
-                </p>
-                <p>
-                    { JSON.stringify(meta) }
-                </p>
-            </div>
-
             { children }
         </article>
+
+        <Footer slug={ slug } info={ info } meta={ meta } />
     </div>
 }

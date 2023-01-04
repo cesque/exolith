@@ -1,0 +1,41 @@
+@import '@/styles/breakpoints.scss';
+
+.footer {
+    padding: var(--spacing-medium);
+    padding-top: var(--spacing-large);
+}
+
+.row {
+
+}
+
+.rowData {
+    font-weight: 700;
+    padding: 0 4px;
+}
+
+.rowWrap {
+    overflow-wrap: break-word;
+    hyphens: auto;
+    // -webkit-hyphenate-character: "◆";
+
+    @supports(overflow-wrap: anywhere) {
+        overflow-wrap: anywhere;
+    }
+}
+
+.codePart {
+
+}
+
+.codePartLong {
+    display: none;
+
+    @media (min-width: $breakpoint-small) {
+        display: inline;
+    }
+}
+
+.tag {
+    border-bottom: none;
+}

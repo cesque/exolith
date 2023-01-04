@@ -1,0 +1,24 @@
+export const meta = {
+    title: 'hierophant.app',
+    tags: ['web', 'programming', 'occult'],
+}
+
+**hierophant.app** is a site for checking the meaning of cards from a standard tarot deck, as well as drawing tarot spreads. This site is available at [hierophant.app](https://hierophant.app/) and is written in vue.js. I wrote the site because I found that the existing sites I was using to check meanings were extremely useful but also did not prioritise the short, one- or two-word keywords which I was looking to reference when looking up a card.
+
+<Image src="https://monolith.cesque.dev/content/images/2022/07/image-1.png" caption="the meanings page" full />
+
+The site is not intended as a full reference for meanings but rather a quick reference as well as a jumping-off point for deeper learning. The main meaning page lists a few short meanings and then below the fold links off to other sites which have longer explanations of the meaning of the card such as [Labyrinthos](https://labyrinthos.co/blogs/tarot-card-meanings-list), [Biddy Tarot](https://www.biddytarot.com/tarot-card-meanings/) and Buster Benson's tarot reference (currently offline, seemingly).
+
+Also included is some extra information, including offering some questions for self-reflection. There's also some extra data which was in the data set that I don't understand but looked fun so I added it.
+
+<Image src="https://monolith.cesque.dev/content/images/size/w1600/2022/07/image-2.png" caption="the meanings page (below the fold)" full />
+
+I also implemented persistent customisation settings including a customisable colours with pre-defined themes available too. The design of the website uses only 3 colours, so these can be provided with CSS variables. There is also the option to change the font used throughout the site, similarly using an editable CSS variable to implement it.
+
+<Image src="https://monolith.cesque.dev/content/images/size/w1600/2022/07/image-3.png" caption="the settings page" full />
+
+The spreads page allows a user to choose from a predefined list of tarot spreads and then draw the cards in that spread. I took a sample of simple, standard spreads which I found from an internet search, as well as checking some of the sites mentioned before. The spread format allows for multiple named cards (as many as are needed for the spread) laid out in different positions, rotations, and optionally stacked, so it should be pretty adaptable to whatever spreads are required. As such, it's a potential future feature to be able to define/edit your own spreads on the site.
+
+<Image src="https://monolith.cesque.dev/content/images/size/w1600/2022/07/image-4.png" caption="the spread page, with cards drawn" full />
+
+The code for hierophant.app can be found on [GitHub](https://github.com/cesque/tarot).

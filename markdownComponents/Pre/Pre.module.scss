@@ -1,0 +1,11 @@
+.pre {
+    border: 2px solid black;
+    padding: var(--spacing-medium);
+    margin: 0 var(--spacing-medium);
+    overflow-x: auto;
+
+    code {
+        padding: 0;
+        border: none;
+    }
+}

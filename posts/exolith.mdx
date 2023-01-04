@@ -1,0 +1,28 @@
+export const meta = {
+    title: 'Exolith',
+    tags: ['monolith', 'web', 'programming'],
+}
+
+**Exolith** is a rewrite of **Monolith** ditching Ghost CMS in favour of writing my posts in **MDX**, and using the new Next.js experimental `app` directory.
+
+It would be useful here to refer back to the four points which I wanted in a blog solution back when I started working on Monolith, which can be seen in [my original post](/monolith-i):
+
+1. **Focus on writing**
+2. **Good UI**
+3. **Sensible JSON output**
+4. **Extensibility**
+
+The lack of **3** was increasingly annoying me with my Ghost-powered solution. I acknowledged my annoyance with Ghost's horrible HTML output in both of my original Monolith posts ([1](/monolith-i), [2](/monolith-ii)), and it never sat right since then. Additionally, I started feeling more and more constrained from a lack of **4**.
+
+Long have I been proclaiming to anyone who will listen: "I like Ghost, but what I really want is *Markdown but with React components*".
+
+Then I read a post detailing that GitHub were going to start allowing some interactive elements in README files through the use of a language called **MDX** which turned out was just Markdown with React components. At least, I *think* I read that post; my attempts to find it again to link here resulted in my own little [Mandela Effect](https://en.wikipedia.org/wiki/False_memory#Mandela_Effect).
+
+Regardless, I discovered MDX and realised that it was exactly what I was waiting for. After a period of thinking about whether it was actually worth the effort, I decided to start the rewrite.
+
+This means that I will no longer be using a fancy CMS, so points **1** (*Focus on writing*) and **2** (*Good UI*) are taking a hit. But I've always been a fan of making notes in Notepad, and so, with word wrap enabled, VS Code is a completely sufficient editing environment for me.
+And while I wouldn't call it a *good* UI, it's a *familiar* UI. Ultimately, I'm sacrificing a small amount of those things for extremely large (well, infinite) gains in point **4** (*Extensibility*). There's no JSON output, but I would just be using JSON to hydrate React components... and the MDX implementation for Next.js gives me full control over the components used for each native Markdown element if I so wish.
+
+Even on top of that, the jank of my old [meta image solution](http://localhost:3000/next-meta-image) is replaced by [Vercel OG Image Generation](https://vercel.com/docs/concepts/functions/edge-functions/og-image-generation) which seems to be a bit more sensible.
+
+There's still a bit of weirdness–getting the list of posts involves enumerating an actual directory of files, which doesn't feel ideal. Overall, however, this rebuild seems a lot more stable and sensible, and means I don't have to rely on an externally hosted CMS. I wouldn't recommend it for a non-programmer, but it's perfect for me.

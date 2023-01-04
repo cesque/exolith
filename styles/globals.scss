@@ -1,19 +1,26 @@
 // @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200;300;400;500;600;700;800;900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
-
+// @font-face {
+//     font-family: 'System Error';
+//     src: url(../public/SystemError.otf);
+// }
 @font-face {
-    font-family: 'System Error';
-    src: url(../public/SystemError.otf);
+    font-family: 'Space Mono';
+    src: url(../public/SpaceMono-Bold.ttf);
 }
 
 html {
-    --font-display: 'System Error', monospace;
-    --font-body: sans-serif;
+    --font-display: 'Space Mono', monospace;
+    --font-body: Inconsolata, monospace;
 
+    --spacing-xsmall: 5px;
     --spacing-small: 10px;
     --spacing-medium: 20px;
     --spacing-large: 40px;
+
+    --width: 500px;
+    --width-wide: 800px;
 }
 
 html,
@@ -27,6 +34,7 @@ body {
 a {
     color: inherit;
     text-decoration: none;
+    border-bottom: 2px solid black;
 }
 
 * {
@@ -37,6 +45,7 @@ a {
     html {
         color-scheme: dark;
     }
+
     body {
         color: white;
         background: black;

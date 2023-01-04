@@ -1,0 +1,241 @@
+export const meta = {
+    title: 'qcpu',
+    tags: ['qcpu', 'programming'],
+}
+
+**qcpu** is a fictional 16-bit CPU specification. It is inspired by the specification for the **DCPU16** CPU from the scrapped Mojang game **0x10c**, the CPU architectures in **Zachtronics** games, and also a programming challenge which centered around implementing a fictional CPU (and which I can not find at all on the internet any more).
+
+> **EDIT**: This was the first stage of the [Synacore Challenge](https://challenge.synacor.com/), which was apparently created by the creator of Advent of Code.
+
+qcpu has a [node.js implementation](https://github.com/cesque/qcpu) and a significantly faster [Rust implementation](https://github.com/cesque/qcpu-rust), both written by me. My friend and housemate [Syphonx](https://github.com/Syphonx) has also created a [C++ implementation](https://github.com/Syphonx/qcpu-cpp) with some debugging tools included.
+
+## Specification
+
+The CPU has a 16-bit addressable space (65536 addressable locations), where each address contains a 16-bit unsigned integer (henceforth a *word*).
+
+There are also 6 registers, which exist out of addressable space. Each of these registers stores a single word. These registers are typically referred to by the single-character names `a b c d x y`.
+
+The CPU also has a stack which exists outside memory and contains a theoretically unbounded amount of words (the actual limit can be implementation defined).
+
+Each instruction can have up to 4 operands. Instructions are represented in memory by a single word which represents both opcode and addressing information for each operand (see below), and then a maximum of 4 words–one for each operand which is required by the specific opcode.
+
+The opcode is stored in the low byte of the first word of the instruction. The high byte stores the addressing information for the operands. This byte is split into four two-bit values, one for each operand, which correspond to the following addressing modes:
+
+- **0: Immediate** - a 16-bit constant value.
+- **1: Absolute** - the value contained at the specified memory address.
+- **2: Indirect** - the value contained at the memory address contained in the specified register. The register is given as a value from 0 to 6, which map to the 6 registers mentioned above.
+- **3: Register** - the value contained in the specified register.
+
+Using an operator which writes to a value and using the *Immediate* addressing mode is undefined behaviour. Additionally, providing a value outside of the range of 0-5 for either of the addressing modes which refer to registers (*Indirect* and *Register*) is undefined behaviour. Implementations of qcpu are free to implement these behaviours in whichever way they prefer. Usually, this would involve crashing the emulation, but the latter behaviour could also be implemented by wrapping the provided value within the valid range.
+
+## Opcodes
+
+qcpu has 25 opcodes, which are as follows:
+
+<Table full>
+    <thead>
+        <tr>
+            <th>**value**</th>
+            <th>**mnemonic**</th>
+            <th>**effect**</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>0</td>
+            <td>**nop**</td>
+            <td>does nothing</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>**ext a**</td>
+            <td>stop execution, returns value `a`</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>**sys a**</td>
+            <td>executes system call `a` (usually accepting argument in register `x`)</td>
+        </tr>
+        <tr>
+            <th colspan="3">**data operations**</th>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>**mov a b**</td>
+            <td>sets the value in `a` to the value in `b`</td>
+        </tr>
+        <tr>
+            <th colspan="3">**jumps and conditionals**</th>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>**jmp a**</td>
+            <td>jump to address `a`</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>**jeq a b c**</td>
+            <td>jump to address `a` if `b == c`</td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td>**jne a b c**</td>
+            <td>jump to address `a` if `b != c`</td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td>**jgt a b c**</td>
+            <td>jump to address `a` if `b > c`</td>
+        </tr>
+        <tr>
+            <td>8</td>
+            <td>**jge a b c**</td>
+            <td>jump to address `a` if `b >= c`</td>
+        </tr>
+        <tr>
+            <td>9</td>
+            <td>**jlt a b c**</td>
+            <td>jump to address `a` if `b < c`</td>
+        </tr>
+        <tr>
+            <td>10</td>
+            <td>**jle a b c**</td>
+            <td>jump to address `a` if `b <= c`</td>
+        </tr>
+        <tr>
+            <th colspan="3">**subroutines**</th>
+        </tr>
+        <tr>
+            <td>11</td>
+            <td>**jsr a**</td>
+            <td>push the current address to the call stack and jump to address `a`</td>
+        </tr>
+        <tr>
+            <td>12</td>
+            <td>**ret**</td>
+            <td>pop an address from the call stack and jump to that address</td>
+        </tr>
+        <tr>
+            <th colspan="3">**arithmetic operations**</th>
+        </tr>
+        <tr>
+            <td>13</td>
+            <td>**add a b**</td>
+            <td>add `b` to the contents of `a`</td>
+        </tr>
+        <tr>
+            <td>14</td>
+            <td>**sub a b**</td>
+            <td>subtract `b` from the contents of `a`</td>
+        </tr>
+        <tr>
+            <td>15</td>
+            <td>**mul a b**</td>
+            <td>multiply the contents of `a` by `b`</td>
+        </tr>
+        <tr>
+            <td>16</td>
+            <td>**mod a b**</td>
+            <td>set the contents of `a` to `a % b`</td>
+        </tr>
+        <tr>
+            <th colspan="3">**bitwise operations**</th>
+        </tr>
+        <tr>
+            <td>17</td>
+            <td>**and a b**</td>
+            <td>set the contents of `a` to the bitwise *and* of `a` with `b`</td>
+        </tr>
+        <tr>
+            <td>18</td>
+            <td>**orr a b**</td>
+            <td>set the contents of `a` to the bitwise *or* of `a` with `b`</td>
+        </tr>
+        <tr>
+            <td>19</td>
+            <td>**not a**</td>
+            <td>perform a bitwise *not* on the contents of `a`</td>
+        </tr>
+        <tr>
+            <td>20</td>
+            <td>**xor a b**</td>
+            <td>set the contents of `a` to the bitwise xor of `a` with `b`</td>
+        </tr>
+        <tr>
+            <td>21</td>
+            <td>**lsl a b**</td>
+            <td>perform a logical left shift by `b` bits on the contents of `a`</td>
+        </tr>
+        <tr>
+            <td>22</td>
+            <td>**lsr a b**</td>
+            <td>perform a logical right shift by `b` bits on the contents of `a`</td>
+        </tr>
+        <tr>
+            <th colspan="3">**stack operations**</th>
+        </tr>
+        <tr>
+            <td>23</td>
+            <td>**psh a**</td>
+            <td>push value of `a` onto stack</td>
+        </tr>
+        <tr>
+            <td>24</td>
+            <td>**pop a**</td>
+            <td>pop top value from stack into `a`</td>
+        </tr>
+    </tbody>
+</Table>
+
+## The `sys` opcode
+
+The `sys` opcode allows the CPU to interface with input and output devices. A connected device can provide a set of 'syscalls' which can be called by using the sys opcode with the single operand being the ID of the syscall.
+
+For example, the terminal implementation of qcpu provides the following syscalls to allow for input and output, as well as limited debugging capabilities:
+
+<Table wide>
+    <thead>
+        <tr>
+            <th>**syscall**</th>
+            <th>**effect**</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>**sys 6**</td>
+            <td>writes the character represented by the ASCII character code in register `x` to the output</td>
+        </tr>
+        <tr>
+            <td>**sys 7**</td>
+            <td>reads a character from input and moves its ACII character code representation into register `x`</td>
+        </tr>
+        <tr>
+            <td>**sys 11**</td>
+            <td>sets the foreground colour of subsequent terminal output to a predefined palette index (0-8) given by register `x`</td>
+        </tr>
+        <tr>
+            <td>**sys 11**</td>
+            <td>sets the background colour of subsequent terminal output to a predefined palette index (0-8) given by register `x`</td>
+        </tr>
+        <tr>
+            <td>**sys 15**</td>
+            <td>writes the current memory contents to a text file</td>
+        </tr>
+    </tbody>
+</Table>
+
+## Binary qcpu files
+
+Programs are loaded in to qcpu using binary files generated by the assembler. Each word of memory is loaded in starting at address 0. Each word is represented by two bytes of the binary file: low byte first, high byte second.
+
+## Writing assembly for qcpu: qasm files
+
+**qasm** is an assembly language in which programs for qcpu can be written. There isn't a full specification yet, but here are some points of note:
+
+- Labels are defined by adding a colon after an identifier, and can be used as an operand of an instruction to give the address of that label in Immediate mode.
+- '+' and '-' can be used as temporary labels; using one as an operand will give the address of the next (+) or previous (-) instance of that label, which is useful for creating loops which don't need a specific named label.
+- The `.text` assembler directive will create a set of words from a string's ASCII codes, e.g. `.text('hello world')`.
+- The `.ds` assembler directive will increase the assembler location counter by the given value, e.g. to leave 100 bytes of empty space `.ds(100)`. This does not zero the memory that is skipped over if it is non-zero already.
+- The `.org` assembler directive will set the assembler location counter to the given value, e.g. `.org(0x1000)`.
+- The `.ds` and `.org` directives, as well as immediate values for instruction operands, can take any numeric value. A numeric value is defined as either a base-10 number (`123`), a base-16 number (`0x8000`), or a binary number (`0b1111000010001010`).
+- Comments can be added to qasm files by using either `#` or `;`. Any characters after the first instance of these comment characters on a line will not be processed by the assembler.

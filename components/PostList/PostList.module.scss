@@ -1,0 +1,22 @@
+.list {
+    list-style: none;
+    padding: var(--spacing-medium);
+    margin: 0;
+}
+
+.post {
+    a {
+        text-decoration: none;
+        border-bottom: none;
+    }
+}
+
+.selectedIndicator {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-right: 5px;
+    background: black;
+    border-radius: 100vw;
+    vertical-align: middle;
+}

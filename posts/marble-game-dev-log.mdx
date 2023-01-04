@@ -1,0 +1,59 @@
+export const meta = {
+    title: 'Marble Game Dev Log',
+    tags: ['programming', 'games'],
+}
+
+## 2022-09-12
+
+- Implemented the ability to drag a non-terminal wire segment in the editor.
+Currently this only works for vertical segments, where you can drag them left and right, but it's trivial to add the other orientation.
+
+I foresee a little problem with a related piece of behaviour I have to add: I plan to add a 'slice' ability which will split a wire segment in 2. However, those two wire segments will be adjacent and have the same orientation, which would as-is extremely mess up the dragging code (or rather, the re-computing of segment coördinates after finishing the drag). I will probably have to check for this scenario then insert a new wire segment in between them when one is dragged.
+
+## 2022-09-09
+
+Back on the grind after falling off for a bit, not to mention LAN.
+
+- Reworked/renamed methods to convert from one coördinate system to another.
+- Started work on wire editor strategy.
+
+The naming of the methods to convert between various systems used for positioning were unclear, so I'm going to use `Convert[...]SpaceTo[...]Space()` from now on. The puzzle display also needs this in order to subtract the display position from the screen position when converting through to puzzle space, so despite me simplifying everything last time I worked on it, the systems are still pretty complicated 😅. Using a consistent naming system should really mitigate a lot of the pain though.
+
+As for wire editing, I've thought about the best way to do this for quite a long time, and I'm still not sure if I'm doing it the right way, but at least I can always come back and change it later...
+
+## 2022-08-12
+
+- Rewrote drag and drop to be handled by editor (ensuring that only one component can be dragged at a time).
+- As part of the above, implemented a `PuzzleEditorContext` class to handle editor behaviour and rendering.
+
+The drag and drop behaviour is feeling a little clunky. I'll have to revisit this; I suspect it's to mostly do with the rounding of the drop position, but there are other QOL things I will probably have to add too.
+
+I've also realised that rendering the game with essentially 3 different coördinate systems is going to be a bit of a pain... There's currently:
+
+1. **Grid coördinates**: everything WITHIN a grid MUST be aligned to grid. This grid uses integer values only.
+2. **Non-grid coördinates**: the game rendering is scaled up by a fixed value – if the screen scale value is 3.0, then moving right by 1 "pixel" in this system is equal to 3 real pixels on the screen. Everything within the game itself uses this coördinate system.
+3. **Raw screen coördinates**: this is the raw position within the game window, without taking into account any scaling factor. Editor features are (currently) drawn using this coördinate system, meaning they can transcend the scale factor.
+
+For example, imagine a grid which uses 10×10 pixel characters, is 50 characters wide and 25 characters tall. Drawn with a screen scale of 1.0, this would result in the game render target being 500×250. Additionally, at a screen scale of 1.0, the game *window* will also be 500×250.
+
+At a screen scale of 2.0, the game still behaves as if it is 500×250 but is rendered at twice the size, resulting in a window of size 1000×500. This lets us do things like fullscreen really easily, and is a desired art-style regardless, but it means that mouse input, which gives us position values in raw screen coördinates, needs to get converted.
+
+I'm quite tempted to make the editor render to non-grid coördinates instead of raw screen coördinates, because I kind of feel like I'm having to juggle between the three systems at the moment. That said... I would still need to deal with it for mouse input? Though that could then get handled in the `InputManager` and I could essentially just forget about it...
+
+> Edit: I updated the coördinate system as described above, and it probably took me less time to do than it did to write this dev log entry, so...
+
+## 2022-08-07
+
+First entry! So far I have the following implemented:
+
+- Working components with input + output
+- Wires between components
+- Two different resource types (marble and spark)
+- Puzzle view which is scrollable independent of the grid (less authentic, but better game-feel. This will be toggleable in settings, I think?)
+- Loading levels from JSON
+- Editor mode which can render extra non-grid UI over the normal game
+- Editor mode UI using **Dear ImGui**
+
+My next step is to re-implement my component drag-and-drop functionality to be unified in the editor context rather than having each component handle its drag-and-drop itself (this worked briefly but I quickly realised it was going to cause massive issues, so a rewrite now is smart).
+
+After that, I will probably add the ability to draw and edit wires in editor mode, the ability to add components to the puzzle, and then the ability to save the puzzle by serialising it to a JSON file. At this point I will have to assess whether I want to keep the existing level format which came from using Tiled as the editor, or create a new one.

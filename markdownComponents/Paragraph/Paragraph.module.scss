@@ -1,8 +1,4 @@
 .paragraph {
-    margin: 0;
-    padding: var(--spacing-medium);
-
-    + & {
-        padding-bottom: 0px;
-    }
+    margin: 0 var(--spacing-medium);
+    padding: 0;
 }

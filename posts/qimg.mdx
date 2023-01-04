@@ -1,0 +1,91 @@
+export const meta = {
+    title: 'qimg',
+    tags: ['design', 'programming'],
+}
+
+**qimg** is an image compression algorithm and filetype I created out of curiousity. A while back, I played around with the JPEG idea of dividing an image into equally-sized blocks and then performing some operation on those blocks to reduce the amount of data that needs to be stored. Achieving a high compression ratio was not a priority, and neither was accurately reproducing the source image from the compressed version.
+
+<Image src="https://monolith.cesque.dev/content/images/size/w2400/2022/03/086167283639-1-.jpg" full />
+
+## Algorithm
+
+In order to compress an image with **qimg**, a *box size* needs to be decided. This is the size of the grid which is used to slice the source image into 'boxes'. Ideally this value should equally divide both of the dimensions of the source image, but if not, any excess on the right and bottom sides of the image will be cropped. Lower values (smaller boxes) mean higher image fidelity and vice versa - I'll include some information about the file size implications of different values of *box size* later on in this post.
+
+The steps of the algorithm are as follows: first, split the image into n×n boxes, then for each box:
+
+1. Calculate the average luminance of the pixels within the box
+2. Find the average colour of all pixels whose luminance is lower than the average within that box; this is the box's **dark colour**.
+3. Find the average colour of all pixels whose luminance is higher than the average within that box; this is the box's **light colour**.
+4. For each pixel, instead of storing an RGB colour, we merely store whether that pixel is 'light' or 'dark'. If its luminance is below the box's average, we use the box's dark colour, and if its luminance is above the box's average, we use the box's light colour.
+
+## File format (`.qimg`)
+The `.qimg` file format is designed to store an image which has been compressed in this way. The format begins with a 16 byte header:
+
+1. **8 bytes**: the format's magic bytes `[99, 115, 113, 47, 113, 105, 109, 103]`, equivalent to the ASCII character codes of the string `csq/qimg`.
+2. **2 bytes**: the format's version number; the first byte is the major number and the second byte is the minor number. The current format uses a version of 0.1.
+3. **1 byte**: the box size for the image.
+4. **2 bytes**: the size of the image, with 1 byte for width and 1 byte for height. These values are the size of the image in boxes, and to get the actual pixel dimensions they should be multiplied by the box size.
+5. **3 bytes**: 24 bit big-endian number of boxes in the image.
+
+After the header, there are as many boxes as described in the header. Each box is represented in memory as follows:
+
+1. **2 bytes**: the box's position, with 1 byte for width and 1 byte for height. Again, these should be multiplied by the box size if you want the actual pixel positions.
+2. **3 bytes**: the box's light colour, with 1 byte for each of the red, green and blue components of the colour.
+3. **3 bytes**: the box's dark colour, with 1 byte for each of the red, green and blue components of the colour.
+4. **box size²** bytes: the pixels of the box, where a 1 indicates that the box's light colour should be used and a 0 indicates that the box's dark colour should be used.
+
+While boxes can be stored in any order since their position is encoded into their individual headers, the pixels within a box are represented from top-left, proceeding along the X axis. For a box size of 8, the pixel at index 0 would be {`{x: 0, y: 0}`}, the pixel at index 1 would be {`{x: 1, y: 0}`} and the pixel at index 8 would be {`{x: 0, y: 1}`}.
+
+## CLI conversion utility
+<Bookmark link="https://github.com/cesque/qimg"
+    image="https://opengraph.githubassets.com/cfc2de60634fa4a9c326df6045c5448d0af959e375a5c5437dc8954535bfda19/cesque/qimg"
+    title="GitHub - cesque/qimg"
+    description="an intentionally unsubtle image compression algorithm"
+    favicon="https://github.com/fluidicon.png"
+    site="GitHub"
+    publisher="cesque"
+/>
+
+The GitHub repository for this project has a command line utility which can convert files to and from the `.qimg` format. An input path can be supplied with the `--input` or `-i` parameter. Optionally, an output path can be supplied with the `--output` or `-o` parameter.
+
+If the input has the `.qimg` extension, then it will be converted to either a JPEG or a PNG depending on the output path and written to disk (if no output is provided, it will be written to a JPEG with the same base name and in the same folder as the input file).
+
+If the input has `.jpg`, `.jpeg` or `.png` extensions, then it will be compressed using the qimg algorithm as long as a *box size* is provided with the `--box-size` or `-n` parameter. If the output is not provided, or has `.qimg` extension, the image will be written to a file using the file format provided above. If the output has `.jpg`, `.jpeg` or `.png` extensions, then the image will be compressed and converted back to the given format so it can be easily viewed in any image viewer.
+
+The header image for this post was generated using the command node `qimg.mjs -i input/header.png -o output/header.jpg -n 64`. The `.mjs` extension must be specified; it seems like omitting it is only supported for standard `.js` files!
+
+## Results
+
+<Image src="https://monolith.cesque.dev/content/images/2022/03/apples_16.jpg" caption="apples.jpeg input file, with a box size of 8, 16, 32 and 64" full />
+
+For a project where I expressly didn't care about image fidelity, I was quite pleased with the results. It's definitely not a feasible compression method, but as a fun toy I thought up of and subsequently implemented it exceeded my expectations. Even at high values for the *box size*, the image is still very recognisable.
+
+One thing that surprised me was the algorithm's preservation of detail, even in areas with subtle detail/texture. This is down the fact that the algorithm determines average luminosity within a box rather than globally, while still keeping each individual pixel discrete (which means no blurring). This was most noticable for me in the conversion of images of the painting *Girl with a Pearl Earring* - the painted texture of the background is extremely well preserved, even at high *box size* values. Of course, in areas with more visual information then there is a lot more information loss.
+
+<Image src="https://monolith.cesque.dev/content/images/2022/03/girl_64.jpg" caption="girl.jpeg input file, with a box size of 8, 16, 32 and 64" full />
+
+## Compression
+
+Each box in a qimg format image has a fixed size, which is the sum of its header and then its pixel data. Each pixel is (currently, though see improvements below) 1 byte, and there is a square grid of edge length *box size* pixels, for a total of *box size²* pixels. In fact, the total amount of pixels is the same no matter the *box size*, aside from the cropping that takes place, so in seeing the effect of different *box size* values we don't need to take into account the pixel data at all. The improvement of this algorithm over storing each individual pixel's 8 bit RGB value can be seen as storing the same amount of pixels but instead only a single channel – resulting in pixel data that is ⅓ of the original size.
+
+The total number of boxes in compression is `floor(image.width / box_size) * floor(image.height / box_size)`, and each box adds 8 bytes of overhead. With a *box size* of 2, each box contains 4 pixels of 1 byte each, and 8 bytes of header, compared to the equivalent uncompressed 4 pixels of 3 bytes each, both for a total of 12 bytes. Given a *box size* `n`, there is a saving of `2n² - 8` bytes by using qimg over storing each pixel as a 3-byte RGB value.
+
+Again, this is just an experiment and not an actually useful compression method!
+
+## Thoughts & improvements
+
+An obvious improvement to the file format which affects the compression ratio by a lot is to bit-pack the pixel array within a box. Currently, 1 byte is being allocated per-pixel to a value that can only ever be 0 or 1. This leaves 7 bits of wasted space; we can more efficiently use each bit in a byte of our file to represent each pixel. Some extra padding may need to occur when the total number of pixels does not divide neatly by the amount of bits in a byte, but this is still always an equal or lower amount of wasted bits than the current implementation.
+
+An idea for an evolution of this algorithm would be to add more colours per box. The boxes can currently be seen as having a palette of 2 colours, and each pixel has a palette index. We could split the luminosity up into more divisions and have, say, 4 colours ranging from lowest luminosity to highest. The memory requirement for each box would increase by 3 bytes for every colour we added. In the current implementation, there would not be any extra space required for the pixels because each pixel could already store a palette value up to 255, but the above space-packing fix was implemented, the memory requirement for a pixel would be log2 of the number of palette entries required.
+
+Another thing I noticed while writing the decompression algorithm is that, since each box encodes its own position information, it's not necessary that an image contain its maximum number of boxes. A box could be omitted if it is considered close enough to empty/black.
+
+Similarly in cases where a box's light and dark colours are similar enough, we could omit the pixel array and solid fill the box with the average of the dark and light colours. For low-information areas such as the background of the *Girl with a Pearl Earring* image, this would save a lot of space!
+
+It would be really interesting to test the two strategies described above to see what effect they could have on the resultant image. I believe that they would make the image look significantly 'worse', but as image fidelity isn't a goal of the project and in fact I quite like the 'painterly' style that such an aggressive and indelicate compression method adds, the results could end up being very compelling.
+
+---
+
+My final idea for another iteration on this idea is a new algorithm working on the same basic principle of dividing the image up into boxes and iterating across them. The algorithm would generate a 2-colour gradient representing each box. The gradient would describe 2 colours, an angle and 2 stop positions to shift and scale the gradient correctly. No pixel data would be stored, so each box could be fully described using only 9 bytes.
+
+I personally believe that this algorithm would produce terrible-looking results, but hopefully at least terrible-looking in an interesting way!

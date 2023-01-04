@@ -1,0 +1,19 @@
+export const meta = {
+    title: 'DigiTek VECTRON',
+    tags: ['qcpu', 'programming'],
+}
+
+The **DigiTek VECTRON** is one of a pair of fictional display devices written for use with [qcpu](/qcpu). The VECTRON uses 2-color vector graphics, and has a square display. Since **qcpu** interacts with external devices with the `SYS` system call opcode, the VECTRON exposes 5 different syscalls in order to control it:
+
+- **SYS 21 DRAW LINE**: disable **DRAWING MODE**, move cursor to (x, y), enable **DRAWING MODE**, move cursor to (a, b).
+- **SYS 22 LIFT AND MOVE**: disable **DRAWING MODE**, move cursor to (x, y), enable **DRAWING MODE**.
+- **SYS 23 CONTINUE LINE**: move cursor to (x, y).
+- **SYS 24 SET BRIGHTNESS**: dim **DRAWING MODE** color to (x), where 0 is minimum brightness (off) and 65535 is full brightness.
+- **SYS 25 SET COLOR**: change **DRAWING MODE** color to (x), where 0 is white and 1 is red.
+The coördinates provided to these calls map the square screen from top left (0, 0) to bottom right (65535, 65535).
+
+N.B. the **CONTINUE LINE** syscall is so named because the other syscalls do not allow the **DRAWING MODE** to be left disabled after their use, so the **CONTINUE LINE** syscall will always draw a line to the screen. Also, the use of values greater than 1 as the argument for the **SET COLOR** syscall is technically undefined, but implementations would be smart to treat this as if the argument was 1 regardless.
+
+An example program written for the DigiTek VECTRON is shown below:
+
+<Video src="https://cesque.com/storage/22/10/23/126035427843.mp4" />

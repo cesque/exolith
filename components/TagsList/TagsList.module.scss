@@ -1,0 +1,27 @@
+.openTags {
+    margin: 0 var(--spacing-medium);
+    cursor: pointer;
+}
+
+.tags {
+    margin: 0 var(--spacing-medium);
+    padding: 0;
+    max-width: 300px;
+    overflow-wrap: break-word;
+
+    @supports(overflow-wrap: anywhere) {
+        overflow-wrap: anywhere;
+    }
+}
+
+.tag {
+    border-bottom: none;
+
+    &:hover {
+        border-bottom: 2px solid black;
+    }
+}
+
+.tagSelected {
+    border-bottom: 2px solid black;
+}
