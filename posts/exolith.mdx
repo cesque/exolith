@@ -26,3 +26,5 @@ And while I wouldn't call it a *good* UI, it's a *familiar* UI. Ultimately, I'm 
 Even on top of that, the jank of my old [meta image solution](http://localhost:3000/next-meta-image) is replaced by [Vercel OG Image Generation](https://vercel.com/docs/concepts/functions/edge-functions/og-image-generation) which seems to be a bit more sensible.
 
 There's still a bit of weirdness–getting the list of posts involves enumerating an actual directory of files, which doesn't feel ideal. Overall, however, this rebuild seems a lot more stable and sensible, and means I don't have to rely on an externally hosted CMS. I wouldn't recommend it for a non-programmer, but it's perfect for me.
+
+> **EDIT**: it seems that Vercel's deployment process doesn't keep file metadata like created + updated timestamps. Therefore I need to come up with a better solution for this–[this post](https://joshuatz.com/posts/2019/gatsby-better-last-updated-or-modified-dates-for-posts/) seems to offer a decent strategy: get the timestamps in a pre-commit hook and add them to the commit.

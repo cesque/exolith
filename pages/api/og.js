@@ -46,6 +46,7 @@ export default async function handler(req, res) {
                 fontFamily: 'Inconsolata',
                 fontSize: 60,
                 width: '100%',
+                height: '100%',
                 background: 'white',
             }}>
                 <Header />
