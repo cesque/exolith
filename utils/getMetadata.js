@@ -3,7 +3,7 @@ export function getMetadata(title, type) {
     let description = `exolith ⁄ ${ title || 'a blog/wiki/knowledge-base/thought-dump' } ⁄ by cesque`
 
     let imageParams = new URLSearchParams()
-    imageParams.set('title', title)
+    imageParams.set('title', title || '')
 
     let url = process.env.VERCEL_URL ? `https://${ process.env.VERCEL_URL }` : `http://localhost:3000`
 
