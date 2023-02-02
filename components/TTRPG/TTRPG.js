@@ -8,7 +8,6 @@ export default function TTRPGList({ data }) {
 }
 
 function TTRPG({ name, link, type, forID, played }) {
-    console.log(styles)
     let capitalisedType = type[0].toUpperCase() + type.slice(1).toLowerCase()
     let classes = classNames(styles.ttrpg, styles['ttrpg' + capitalisedType])
     return <li className={ classes }>
