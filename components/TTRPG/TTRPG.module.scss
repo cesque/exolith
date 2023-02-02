@@ -1,0 +1,48 @@
+.list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-small);
+
+    padding: 0 !important;
+}
+
+.link {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: var(--spacing-small);
+    // border: 1px solid black;
+    border: none;
+}
+
+.name {
+    font-size: 1.4rem;
+}
+
+.info {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-small);
+}
+
+
+.ttrpgGame {
+    border: 2px solid black;
+
+    .name {
+        font-weight: bold;
+    }
+
+    .type {
+        font-weight: bold;
+        background: black;
+        color: white;
+        padding: 0 8px;
+    }
+}
+
+.for {
+    border: 1px solid black;
+    padding: 0 8px;
+}

@@ -7,6 +7,7 @@ import Paragraph from '@/markdownComponents/Paragraph/Paragraph'
 
 import Image from '@/components/Image/Image'
 import { GameRecommendationList } from '@/components/GameRecommendation/GameRecommendation'
+import TTRPGList from '@/components/TTRPG/TTRPG'
 import Header from '@/components/Header/Header'
 import Code from '@/markdownComponents/Code/Code'
 import Pre from '@/markdownComponents/Pre/Pre'
@@ -57,6 +58,7 @@ export default async function PostPage({ params: { slug }, searchParams }) {
 
         Image,
         GameRecommendationList,
+        TTRPGList,
         YouTube,
         Bookmark,
         Sigil,
