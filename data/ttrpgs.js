@@ -74,4 +74,5 @@ export default [
     { name: `Dialect`, link: `https://thornygames.com/pages/dialect`, type: `game` },
     { name: `Dead Planet`, link: `https://www.mothershiprpg.com/dead-planet`, type: `adventure`, for: 'mothership' },
     { name: `Mothership`, link: `https://www.mothershiprpg.com/`, type: `game` },
+    { name: `CY_BORG`, link: `https://www.kickstarter.com/projects/jnohr/cy-borg/description`, type: `game` },
 ]
