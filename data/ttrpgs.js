@@ -75,4 +75,5 @@ export default [
     { name: `Dead Planet`, link: `https://www.mothershiprpg.com/dead-planet`, type: `adventure`, for: 'mothership' },
     { name: `Mothership`, link: `https://www.mothershiprpg.com/`, type: `game` },
     { name: `CY_BORG`, link: `https://www.kickstarter.com/projects/jnohr/cy-borg/description`, type: `game` },
+    { name: `LIMINAL_`, link: `https://www.kickstarter.com/projects/alexeivella/liminal-0/description`, type: `game` },
 ]
