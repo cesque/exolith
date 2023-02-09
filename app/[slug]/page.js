@@ -16,6 +16,7 @@ import YouTube from '@/components/YouTube/YouTube'
 import Bookmark from '@/components/Bookmark/Bookmark'
 import Sigil from '@/components/Sigil/Sigil'
 import Video from '@/components/Video/Video'
+import Ink from '@/components/Ink/Ink'
 import getPost from '@/utils/getPost'
 
 const dirPath = path.join(process.cwd(), 'posts/')
@@ -63,6 +64,7 @@ export default async function PostPage({ params: { slug }, searchParams }) {
         Bookmark,
         Sigil,
         Video,
+        Ink,
     }
 
     return <>
