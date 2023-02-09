@@ -28,7 +28,7 @@
 
 
 .ttrpgGame {
-    border: 2px solid black;
+    border: 2px solid var(--color-foreground);
 
     .name {
         font-weight: bold;
@@ -36,13 +36,13 @@
 
     .type {
         font-weight: bold;
-        background: black;
-        color: white;
+        background: var(--color-foreground);
+        color: var(--color-background);
         padding: 0 8px;
     }
 }
 
 .for {
-    border: 1px solid black;
+    border: 1px solid var(--color-foreground);
     padding: 0 8px;
 }

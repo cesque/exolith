@@ -18,10 +18,10 @@
     border-bottom: none;
 
     &:hover {
-        border-bottom: 2px solid black;
+        border-bottom: 2px solid var(--color-foreground);
     }
 }
 
 .tagSelected {
-    border-bottom: 2px solid black;
+    border-bottom: 2px solid var(--color-foreground);
 }

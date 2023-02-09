@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     margin: 0 var(--spacing-medium);
-    border: 2px solid black;
+    border: 2px solid var(--color-foreground);
 }
 
 .link {
@@ -15,7 +15,7 @@
     aspect-ratio: 12 / 6;
     background: red;
     margin: 0;
-    border-bottom: 2px solid black;
+    border-bottom: 2px solid var(--color-foreground);
 }
 
 .image {
@@ -54,5 +54,5 @@
     height: 5px;
     width: 5px;
     border-radius: 100vw;
-    background: black;
+    background: var(--color-foreground);
 }

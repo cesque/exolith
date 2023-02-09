@@ -5,7 +5,7 @@
 .swatch {
     width: 20px;
     height: 20px;
-    border: 2px solid black;
+    border: 2px solid var(--color-foreground);
     background: linear-gradient(to top right, var(--ink-color), var(--ink-color) 20%, var(--ink-sheen) 80%, var(--ink-sheen));
     display: inline-block;
     margin-right: 1ch;
