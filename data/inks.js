@@ -21,4 +21,9 @@ export default [
         name: 'Pilot Iroshizuku Yama-guri',
         color: 'rgba(105, 64, 50)',
     },
+    {
+        id: 'sailor shikiori yamadori',
+        name: 'Sailor Shikiori Yamadori',
+        color: 'rgba(8, 55, 77)',
+    },
 ]
