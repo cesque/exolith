@@ -26,4 +26,9 @@ export default [
         name: 'Sailor Shikiori Yamadori',
         color: 'rgba(8, 55, 77)',
     },
+    {
+        id: 'diamine oxblood',
+        name: 'Diamine Oxblood',
+        color: 'rgb(255, 0, 0)',
+    },
 ]
