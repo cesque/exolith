@@ -3,6 +3,23 @@ export const meta = {
     tags: ['programming', 'games'],
 }
 
+## 2023-04-22
+
+I didn't write a dev log entry for it, but I *did* implement the 'slice' ability for wire editing which was mentioned in the last entry, and it *did* involve writing some code to consolidate colinear segments of the wire. This code went through a few iterations since it's a pretty involved bit of code which is prone to errors resulting in weird things like segments with 0 length, or wires with 0 segments, or other things of that ilk.
+
+- Improved wire dragging in the wire editor, including being able to drag terminal segments of wires.
+- Rewrote the wire segment consolidation code to be much more robust
+    - This code now deletes wires which end up with 0 segments after consolidation, solving a lot of problems with invalid wires that could be created.
+- Added code to handle disconnecting and reconnecting wire ports when the wire terminal segments are moved.
+
+**TODO:**
+
+- Add ability to add new wires to the puzzle.
+    - I'm thinking of having an auto-routing feature where you can select an output of a component and an input of another, and the wire will be created somewhat optimally (and then you can edit it afterwards).
+- Add ability to add new components to the puzzle.
+- Implement puzzle serialisation.
+    - It's probably also worth doing another pass to check my puzzle *deserialisation* is working as expected still...
+
 ## 2022-09-12
 
 - Implemented the ability to drag a non-terminal wire segment in the editor.
