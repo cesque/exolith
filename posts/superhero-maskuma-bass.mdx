@@ -1,0 +1,229 @@
+export const meta = {
+    title: 'すーぱーひーろー☆マスクマ Bass Sheet Music',
+    tags: ['music'],
+}
+
+This is sheet music for the bass guitar part of **すーぱーひーろー☆マスクマ** written by Tomokazu Tashiro and performed by Tomoko Kaneda. The score is available as a <a href="https://cesque.com/storage/23/04/24/196364367245.pdf">PDF</a> and <a href="https://cesque.com/storage/23/04/24/565172306662.mid">MIDI</a>.
+
+I transcribed it by using Spleeter to split the parts into seperate audio tracks, processing the bass track with Melodyne to show most of the pitch data, then manually going through and creating a MIDI track with the correct data (guided by the Melodyne information but also having to clean up parts and interpret an unclear audio track). I then used Reaper's notation view as a guide to recreate the notation in Lilypond; the source code of the notation file is available below.
+
+<Image src="https://cesque.com/storage/23/04/24/078113982505.png" />
+
+<Image src="https://cesque.com/storage/23/04/24/992959353095.png" />
+
+<Image src="https://cesque.com/storage/23/04/24/990521758967.png" />
+
+```
+\language "english"
+
+\header {
+  title = "すーぱーひーろー☆マスクマ"
+  subtitle = "Super Hero Maskuma"
+  subsubtitle = "Bass"
+  composer = "Tomokazu Tashiro"
+}
+
+\new Staff \relative {
+    \clef bass
+    \key b \minor
+    \numericTimeSignature
+    \time 4/4
+    \tempo 4 = 173
+
+    \partial 8 r8
+
+    \sectionLabel "Intro"
+
+    fs,8 fs r4 r4 fs8 fs
+    r2 fs8 fs4.
+    
+    b8 b fs a b b fs a
+    b b fs a b a fs f
+    e8-. r8 e4-- e8. fs16~ fs8 g8
+    r4 a2.
+
+    \section \sectionLabel "Verse"
+
+    b8 r16 b fs8 a b r16 b fs8 a
+    d r16 d a8 cs d r16 d a8 d
+    g, r16 g d8 fs g r16 g a8 g
+    fs r16 fs e8 fs fs' e d cs
+
+    b8 r16 b fs8 a b r16 b fs8 a
+    g r16 g d8 fs g r16 g g8 fs
+    e r16 e gs8 b e r16 e b8 e,
+    e16 fs r e fs2.
+
+    b8 b' as fs a gs e g fs d a b r b~ b[ a8]
+
+    \section \sectionLabel "Pre-chorus A"
+    g4-. g-. g-. g-.
+    g-. g-. g8 fs g a
+    d4-. d-. d8 a a cs
+    d4-. d-. d8 e d b
+    cs4-. cs-. cs8 d e g
+    fs4-. fs-. fs8 fs, cs' fs,
+    b4-. b-. b-. b-.
+    a-. a-. a8 a b a
+
+    \section \sectionLabel "Pre-chorus B"
+    gs8 gs r g~g g g g
+    cs cs r cs~cs gs cs4
+    fs,4-> e-> g-> fs->
+    r1
+    a4-> r8 gs->~gs r g4->
+    r8 fs fs' fs, fs'4 r
+
+    \section \sectionLabel "Chorus"
+    b,8 r16 b~b r b8~b fs' b a
+    g8 r16 g~g r g8~g d g, gs
+    a r16 a e'8 a, a e' a a,
+    d8 r16 d~d r d8~d e fs a
+    g8 r16 g d8 g,~g d' g g,
+    c8 r16 c~c r c8~c g c g
+    cs4 e g b8 as~
+    as fs fs cs fs, fs fs fs
+
+    b8 r16 b~b r b8~b fs' b a
+    g8 r16 g~g r g8~g d g, gs
+    a r16 a e'8 a, a e' a d,~
+    d a d fs d' a d,4
+
+    e,4 r8 e-. e4. f8
+    r f r f-. f' f, f' f,
+    fs4 r8 fs'8~fs r fs,4
+    fs'4 e d fs,
+    g-. g-. g8 d fs gs
+    a4-. a-. a8 e a as
+    b4-. b-. ds8 e fs b~
+    b b fs4 e8 ds b a
+    g4 g8-. g-. g-. g-. g-. fs-.
+    r fs-. fs'2.
+    b,8 b' a fs f e d a
+    b8 r8 r8 b r8 b a g
+
+    \section \sectionLabel "Pre-verse"
+    fs-. fs-. fs-. fs-. fs-. fs-. fs-. fs-.
+    fs-. fs-. fs-. fs-. fs-. fs-. fs-. fs-.
+    fs'-. fs-. fs-. fs-. fs-. fs-. fs-. fs-.
+    fs,4 cs' e8 fs, fs as
+
+    \section \sectionLabel "Verse"
+    b4-. r r8 a8~a4
+    g4-. r r g8 fs
+    r4 e r e
+    fs8 fs r as r cs~cs4
+
+    b8 r16 b fs8 a b r16 b fs8 a
+    g8 r16 g d8 fs g r16 g g8 fs
+    e r16 e gs8 b e e b e,
+    r4 \tuplet 3/2 { cs'8 e f } fs2
+    r8 b,16 b b8 r a16 a a8 r fs16 fs
+    fs8 r cs' b r b~b[ a]
+
+    \section \sectionLabel "Pre-chorus A"
+    g4 r8 g8 g4 r8 g
+    r g r g g g g a
+    d4 r8 d d4 a8 d
+    r d r d d d e d
+    cs cs r cs cs cs r fs~
+    fs e cs fs,~fs fs as cs
+    b4 r8 b b4 r8 a
+    r a r a b r a a
+
+    \section \sectionLabel "Pre-chorus B"
+    gs gs r g~g g g g
+    cs cs r cs~cs gs cs4
+    fs,4-> e-> g-> fs->
+    r1
+    a8. gs16~gs8 g a8. gs16~gs8 g
+    fs8. fs16~fs8 fs fs4-. r
+
+    \section \sectionLabel "Chorus"
+    b8 r16 b~b r b8~b fs' b a
+    g8 r16 g~g r g8~g d g, gs
+    a r16 a e'8 a, a e' a a,
+    d8 r16 d~d r d8~d e fs a
+    g8 r16 g d8 g,~g d' g g,
+    c8 r16 c~c r c8~c g c g
+    cs4 e g b8 as~
+    as fs fs cs fs, fs fs fs
+
+    b8 r16 b~b r b8~b fs' b a
+    g8 r16 g~g r g8~g d g, gs
+    a r16 a e'8 a, a e' a d,~
+    d a d fs d' a d,4
+
+    e,4 r8 e-. e4. f8
+    r f r f-. f' f, f' f,
+    fs4 r8 fs'8~fs r fs,4
+    fs'4 e d fs,
+    g-. g-. g8 d fs gs
+    a4-. a-. a8 e a as
+    b4-. b-. ds8 e fs b~
+    b b fs4 e8 ds b a
+    g4 g8-. g-. g-. g-. g-. fs-.
+    r fs-. fs2.
+
+    \section \sectionLabel "Bridge"
+    g4 g2 d'4
+    a'4. g8~g d g,4
+    fs4 fs2 cs'8 fs~
+    fs fs e fs cs4 fs,
+    e4 e2 fs8 g
+    a4 a e a8 e'
+    b4 b ds8 e fs b~
+    b b fs4 e8 ds b a
+
+    g8-. r g4 g8 g d' g~
+    g g d g g g a g
+    fs4 fs fs8 fs cs b~
+    b b b fs b d cs a
+
+    \section \sectionLabel  "Pre-chorus B"
+    e8 e r e~e b' e e,
+    fs fs a cs e fs cs fs,
+    g8-. g-. g4 g8-. g-. g4
+    gs8 gs16-. gs-. gs4 a8 b d fs
+
+    a4 a8 e a e cs e
+    a, a b b cs cs d e
+    a a e a a e cs e
+    a, a a a a a a a 
+
+    \section \sectionLabel "Chorus"
+    b2->~b8 fs b g->
+    r g-> r4 r2
+    a2 cs4 e
+    d8 r16 d~d r d8~d a a d
+    g8 r16 g d8 g,~g d' g g,
+    c8 r16 c~c r c8~c g c g
+    cs4 e g b8 as~
+    as fs fs cs fs, fs fs fs
+
+    b8 r16 b~b r b8~b fs' b a
+    g8 r16 g~g r g8~g d g, gs
+    a r16 a e'8 a, a e' a d,~
+    d a d fs d' a d,4
+
+    e,4 r8 e-. e4. f8
+    r f r f-. f'4 f, 
+    fs r8 fs'~fs r fs,4
+    fs' e d fs,
+
+    g4-. g-. g8 d g gs
+    a4-. a-. a8 e a as
+    b4-. b-. ds8 e fs b~
+    b b fs4 e8 ds b a
+    g4 g8-. g-. g-. g-. g-. fs-.
+    r fs-. fs'2.
+    b,8 b' a fs f e d a
+    b8 r r b r4 a
+    g8 g g g g g g g
+    a a a a a a a a
+    r b-> r4 b8-> r a b->~
+    b1~
+    b1
+    \bar "|."
+}
+```

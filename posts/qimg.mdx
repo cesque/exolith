@@ -5,7 +5,7 @@ export const meta = {
 
 **qimg** is an image compression algorithm and filetype I created out of curiousity. A while back, I played around with the JPEG idea of dividing an image into equally-sized blocks and then performing some operation on those blocks to reduce the amount of data that needs to be stored. Achieving a high compression ratio was not a priority, and neither was accurately reproducing the source image from the compressed version.
 
-<Image src="https://monolith.cesque.dev/content/images/size/w2400/2022/03/086167283639-1-.jpg" full />
+<Image src="https://cesque.com/storage/23/04/24/946994549187.jpg" full />
 
 ## Algorithm
 
@@ -52,17 +52,17 @@ If the input has the `.qimg` extension, then it will be converted to either a JP
 
 If the input has `.jpg`, `.jpeg` or `.png` extensions, then it will be compressed using the qimg algorithm as long as a *box size* is provided with the `--box-size` or `-n` parameter. If the output is not provided, or has `.qimg` extension, the image will be written to a file using the file format provided above. If the output has `.jpg`, `.jpeg` or `.png` extensions, then the image will be compressed and converted back to the given format so it can be easily viewed in any image viewer.
 
-The header image for this post was generated using the command node `qimg.mjs -i input/header.png -o output/header.jpg -n 64`. The `.mjs` extension must be specified; it seems like omitting it is only supported for standard `.js` files!
+The header image for this post was generated using the command `node qimg.mjs -i input/header.png -o output/header.jpg -n 64`. The `.mjs` extension must be specified; it seems like omitting it is only supported for standard `.js` files!
 
 ## Results
 
-<Image src="https://monolith.cesque.dev/content/images/2022/03/apples_16.jpg" caption="apples.jpeg input file, with a box size of 8, 16, 32 and 64" full />
+<Image src="https://cesque.com/storage/23/04/24/520270726301.png" caption="apples.jpeg input file, with a box size of 8, 16, 32 and 64" full />
 
 For a project where I expressly didn't care about image fidelity, I was quite pleased with the results. It's definitely not a feasible compression method, but as a fun toy I thought up of and subsequently implemented it exceeded my expectations. Even at high values for the *box size*, the image is still very recognisable.
 
 One thing that surprised me was the algorithm's preservation of detail, even in areas with subtle detail/texture. This is down the fact that the algorithm determines average luminosity within a box rather than globally, while still keeping each individual pixel discrete (which means no blurring). This was most noticable for me in the conversion of images of the painting *Girl with a Pearl Earring* - the painted texture of the background is extremely well preserved, even at high *box size* values. Of course, in areas with more visual information then there is a lot more information loss.
 
-<Image src="https://monolith.cesque.dev/content/images/2022/03/girl_64.jpg" caption="girl.jpeg input file, with a box size of 8, 16, 32 and 64" full />
+<Image src="https://cesque.com/storage/23/04/24/062081940261.png" caption="girl.jpeg input file, with a box size of 8, 16, 32 and 64" full />
 
 ## Compression
 

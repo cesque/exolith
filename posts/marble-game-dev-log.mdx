@@ -3,6 +3,24 @@ export const meta = {
     tags: ['programming', 'games'],
 }
 
+## 2023-04-23
+
+I got back home from a concert and did some more work:
+
+- Added the ability to add new components to the puzzle.
+
+I'm not 100% happy with the way this is coded right now. It feels a little like the type system is getting in my way, which is a bit unusual. I wanted to make a list of each type of component (something like `List<Type where Type : PuzzleComponentWithPosition>`) and then I could use that to automatically create the 'add component' buttons. Unfortunately, I had to settle for just what is essentially `List<Type>` because I didn't find a way to do the type constraints above.
+
+Still works though! Plus I hijacked the preview code I wrote for showing a ghost image of a dragged component and used that for showing a ghost image of a *new* component being added.
+
+As is standard, I'm also still considering my coördinate system. I think writing more helper functions for converting between them would be very useful — the code for the 'new component' preview contains this abomination, for example:
+
+```
+puzzle.display.ConvertDisplaySpaceToScreenSpace(puzzle.ConvertPuzzleSpaceToDisplaySpace(puzzle.grid.ConvertGridSpaceToPuzzleSpace(puzzle.GetClampedMousePositionInGridSpace())));
+``` 
+
+Perhaps an all-rounder method like `puzzle.Convert(Vector2 position, CoordinateSystem from, CoordinateSystem to)`?
+
 ## 2023-04-22
 
 I didn't write a dev log entry for it, but I *did* implement the 'slice' ability for wire editing which was mentioned in the last entry, and it *did* involve writing some code to consolidate colinear segments of the wire. This code went through a few iterations since it's a pretty involved bit of code which is prone to errors resulting in weird things like segments with 0 length, or wires with 0 segments, or other things of that ilk.

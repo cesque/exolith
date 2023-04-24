@@ -7,7 +7,7 @@ export const meta = {
 
 I wanted to add some Open Graph metadata to **monolith** so that when sending links to it over Discord or posting on Twitter, it would look a lot better. I also wanted to dynamically create images for each of the pages; I knew it was possible because of GitHub's new(-ish?) embed images, which were a big inspiration for making my embeds look fancy.
 
-<Image src="https://monolith.cesque.dev/content/images/2021/06/image-4.png" caption="GitHub's repo embed on twitter" />
+<Image src="https://cesque.com/storage/23/04/24/421626895732.png" caption="GitHub's repo embed on discord" />
 
 ## What I tried
 
@@ -37,8 +37,7 @@ Step 5: **Add image URL to page meta data** – with the image file written to t
 
 Step 6: **Cry** – In the same breath that Vercel's build log said the images were being saved, it also complained that it couldn't find them and errored out. It was hard to find information about why this was happening, since it doesn't look like many people were doing dynamic image/file generation with Next.js static site generation and Vercel. Ultimately, I think this unassuming notice on the docs page for Next.js static file serving points us towards the cause:
 
-<Image src="https://monolith.cesque.dev/content/images/2021/06/image-5.png" />
-
+<Image src="https://cesque.com/storage/23/04/24/017727837383.png" />
 
 I had seen this earlier in the process, but I assumed that since I was generating the embed images when the project was built, they would be considered to be in the `public` directory at build time. Indeed, I don't think there really is a runtime for statically generated sites, right?
 
@@ -64,11 +63,4 @@ Honestly, it would be fine to delete the whole thumbnail folder on Cloudinary, s
 
 Now I had my metadata working, the image was showing when posting my links into Discord and Twitter! However, it didn't look quite how I expected it: the image was small, and the layout didn't match the GitHub embeds which I was attempting to emulate.
 
-<Image src="https://monolith.cesque.dev/content/images/2021/06/image-6.png" />
-
-
 This was a simple fix: add an extra meta tag with name `twitter:card` and content `summary_large_image`. Unlike the Open Graph tags, this one uses `name` rather than `property`, which is something to look out for.
-
-The finished embed, in all its glory:
-
-<Image src="https://monolith.cesque.dev/content/images/2021/06/image-7.png" />
