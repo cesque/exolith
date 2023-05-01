@@ -3,6 +3,16 @@ export const meta = {
     tags: ['programming', 'games'],
 }
 
+## 2023-05-02
+
+Firstly: I realised in the shower than my implementation of zoom was flawed; I scrapped what I had written and used the knowledge of what I'd done to write it properly. There's still a *little* jank around it but a) I can fix that later and b) everything works fine on 1× zoom anyway.
+
+Secondly: We have serialisation! I had touted it as an easy feature since I already had written deserialisation and I had a pretty good idea of how it would work. I was half right. The actual implementation was fine, but in order to be able to actually *create* JSON objects I needed a newer version of .NET, which meant upgrading the project to a newer version of MonoGame.
+
+Ultimately I just created a brand new project in MonoGame 3.8.1, copied the code across, then copied that project back into the original one and massaged the file paths so that the source control history would be consistent. I have a weird feeling that it all should have been much more of a horrible mess than it ended up being, but it definitely wasn't a clean way of upgrading...
+
+Next up is starting to write the world map since it's pretty entwined with how the level loading/saving will work. Right now I have to write some kind of UI code to be able to pick files from the filesystem to load, which I think will be a bit of a pain. Also there's a small problem in how/where we're storing the level files and how they will therefore be editable... I have to puzzle that one out a bit more I think!
+
 ## 2023-04-30
 
 I'm not sure what the opposite of a *stroke of genius* is, but I feel like I had one: I decided to add the ability to zoom in and out on a puzzle. This means some headaches: I have to go and convert all of my code which handles coördinates including mouse interaction and rendering and make sure it respects the new scaling. However, this is pretty much a feature I would have wanted to add at some point anyway, so I guess dealing with it early is the best way. I'm about half way through updating the codebase to support this new feature right now.
