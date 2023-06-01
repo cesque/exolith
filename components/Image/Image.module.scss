@@ -2,6 +2,7 @@
     margin: 0;
     padding: var(--spacing-medium);
     display: block;
+    border-bottom: none;
 
     img {
         max-width: 100%;
@@ -16,6 +17,12 @@
     .caption {
         padding: 0 var(--spacing-medium);
     }
+}
+
+.figure {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .caption {

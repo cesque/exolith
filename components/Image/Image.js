@@ -7,8 +7,10 @@ export default function Image({ src, caption, wide, full }) {
         [styles.imageFull]: !!full,
     })
 
-    return <figure className={ classes }>
-        <img src={ src } title={ caption } alt={ caption } />
-        { caption && <figcaption className={ styles.caption }>{ caption }</figcaption> }
-    </figure>
+    return <a href={ src } target="_blank" className={ classes }>
+        <figure className={ styles.figure }>
+            <img src={ src } title={ caption } alt={ caption } />
+            { caption && <figcaption className={ styles.caption }>{ caption }</figcaption> }
+        </figure>
+    </a>
 }
