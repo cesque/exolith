@@ -27,14 +27,14 @@ export default function Footer({ slug, info, meta }) {
     let hasTags = meta.tags && meta.tags.length > 0
 
     return <div className={ styles.footer }>
-        <div className={ styles.row }>
+        {/* <div className={ styles.row }>
             { `pub{` }<span className={ styles.rowData }>{ info.created }</span>{ `}` }
         </div>
         <div className={ styles.row }>
             { `upd{` }<span className={ styles.rowData }>{ info.modified }</span>{ `}` }
-        </div>
+        </div> */}
         { hasTags && <div className={ styles.row }>tags/{ getTags() }</div> }
-        <div className={ styles.row }>© <a href="https://twitter.com/cesque">cesque</a> 2022</div>
+        <div className={ styles.row }>© <a href="https://tech.lgbt/@cesque">cesque</a> 2022</div>
         <div className={ classNames(styles.row, styles.rowWrap) }>{ getCode() }/{ slug }</div>
     </div>
 }
