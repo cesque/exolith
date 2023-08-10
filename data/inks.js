@@ -34,7 +34,7 @@ export default [
     {
         id: 'diamine golden ivy',
         name: 'Diamine Golden Ivy',
-        color: 'rgb(6 106 24)',
+        color: 'rgb(6, 106, 24)',
         shimmer: 'rgb(255, 204, 0)',
     }
 ]

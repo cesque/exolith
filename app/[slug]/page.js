@@ -1,6 +1,5 @@
 import { promises as fs } from 'fs'
 import path from 'path'
-import Post from '../../components/Post/Post'
 
 import { H1, H2, H3, H4, H5, H6 } from '@/markdownComponents/Heading/Heading'
 import Paragraph from '@/markdownComponents/Paragraph/Paragraph'
@@ -18,6 +17,8 @@ import Sigil from '@/components/Sigil/Sigil'
 import Video from '@/components/Video/Video'
 import Ink from '@/components/Ink/Ink'
 import getPost from '@/utils/getPost'
+
+import Post from '@/components/Post/Post'
 
 const dirPath = path.join(process.cwd(), 'posts/')
 
