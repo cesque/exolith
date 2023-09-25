@@ -6,7 +6,7 @@ export default function YouTube({ videoId, time }) {
     let params = new URLSearchParams()
 
     if(time) {
-        params.set('t', time)
+        params.set('start', time)
     }
 
     return <figure className={ styles.youtube }>
