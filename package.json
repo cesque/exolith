@@ -15,9 +15,11 @@
     "@vercel/og": "^0.0.21",
     "classnames": "^2.3.2",
     "eslint-config-next": "^13.0.4",
+    "luxon": "^3.4.3",
     "next": "^13.4.13",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "recharts": "^2.8.0",
     "sass": "^1.56.1"
   }
 }

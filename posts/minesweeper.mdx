@@ -1,0 +1,47 @@
+import MinesweeperGraph from '@/components/MinesweeperGraph/MinesweeperGraph'
+
+export const meta = {
+    title: 'Minesweeper',
+    tags: ['games'],
+}
+
+I started playing Minesweeper on an online site in April 2023, primarily on Expert difficulty (30×16 grid, 99 mines). My current PB time is **97.873**s.
+
+This is a graph of my completed Expert solves since then, as of 2023-10-11:
+
+<MinesweeperGraph />
+
+The red points+line represent my PB, and the blue line is an average of 50 (drop the highest 2, since there are some major outliers which aren't shown off the top of the graph!). The slightly emphasised grey line shows the **100s** mark, which was my goal for a long time until I finally reached it on 2023-10-11, which also spurred me on to finally create this page and graph my progress. You can see that I spent over a month sitting on a PB of **100.061**, which was so close to my goal of breaking sub-100...
+
+The site on which I play doesn't give you access to any API for retrieving game history, so I somewhat reverse engineered how that data is fetched in order to get my results. Pasting the following code into the dev console collects all your results as you switch between all the pages of results.
+
+```
+;(() => {
+    console.log(`%cnow click through each page of your results, and once you've done that, CLICK BACK TO THE FIRST PAGE`, `color: #8e44ad; font-weight: bold`)
+    console.log(`%cmake sure you visit each results page ONCE and once ONLY`, `color: #e74c3c; font-weight: bold`)
+
+    let baseFn = window.S59.u25.bind(window.S59)
+    let results = []
+
+    window.S59.u25 = function(t, e, n, s, a) {
+        let games = e
+        let total = n
+        
+        results = results.concat(games)
+
+        let percentage = Math.round((results.length / total) * 100)
+        console.log(`%c${ results.length }/${ total } games fetched (${ percentage }%)`, `color: #f39c12`)
+
+        if(results.length == total) {
+            console.log(`%call games:`, `color: #2980b9; font-weight: bold`)
+            console.log(results)
+        }
+
+        baseFn(t, e, n, s, a)
+    }
+})();
+```
+
+It's not perfect (especially with regards to having to revisit the first page to get the data for it), but it worked well enough; I could write an automated fetcher which would make things easier but I don't want to get banned (which is the same reason I'm not naming the site). In fact, their internal functions allow you fetch any amount of results, so theoretically I could fetch every single played game at once. But again, I don't want to get my account banned even though using their own client-side code is not against their TOS.
+
+It's worth noting that because the site I used for Minesweeper has no API access, I cannot automatically fetch this data; it is static, and so this graph has to be updated by hand periodically.
