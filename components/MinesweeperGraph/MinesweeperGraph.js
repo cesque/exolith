@@ -134,13 +134,14 @@ export default function MinesweeperGraph() {
                 /> */}
 
                 <ReferenceLine y={ 100000 }
-                    stroke="#ecf0f1"
+                    stroke="var(--color-foreground)"
                     strokeWidth={ 2 }
+                    opacity={ 0.3 }
                 />  
 
                 <Scatter data={ data }
                     type="linear"
-                    fill="black"
+                    fill="var(--color-foreground)"
                     id={ id }
                     isAnimationActive={ false }
                 />
