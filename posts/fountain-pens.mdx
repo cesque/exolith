@@ -3,10 +3,15 @@ export const meta = {
     tags: ['personal'],
 }
 
-Key:
+import inks from '@/data/inks'
+
+## Key
+
 - <Ink name="Normal ink" color="rgb(0, 136, 235)" />
 - <Ink name="Shimmering ink" color="rgb(0, 136, 235)" shimmer="rgb(232, 213, 0)" />
 - <Ink name="Iridescent/sheening ink" color="rgb(0, 136, 235)" sheen="rgb(255, 0, 119)" />
+
+## List of pens
 
 <Image src="https://res.cloudinary.com/cesque/image/upload/v1675958351/fountain-pens/photo_3_n5oi32.jpg" />
 
@@ -102,3 +107,18 @@ Key:
 
 - **Pen**: Kaweco Perkeo Retro Block M
 - **Ink**: <Ink ink="pilot iroshizuku yama-guri" />
+
+## List of inks
+
+<ul>
+    {
+        inks
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map(ink => {
+                return <li>
+                    <Ink ink={ ink.id } />
+                </li>
+            })
+    }
+    <li>Plus a couple of older standard blue inks</li>
+</ul>
