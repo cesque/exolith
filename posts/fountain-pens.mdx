@@ -21,7 +21,7 @@ import inks from '@/data/inks'
 <Image src="https://res.cloudinary.com/cesque/image/upload/v1675958351/fountain-pens/photo_4_pwnl2j.jpg" />
 
 - **Pen**: TWSBI Eco Fountain Pen Limited Edition Transparent Purple 1.1
-- **Ink**: -
+- **Ink**: <Ink ink="pilot iroshizuku murasaki-shikibu" />
 
 <Image src="https://res.cloudinary.com/cesque/image/upload/v1675958351/fountain-pens/photo_1_kyr9qx.jpg" />
 
@@ -115,7 +115,7 @@ import inks from '@/data/inks'
         inks
             .sort((a, b) => a.name.localeCompare(b.name))
             .map(ink => {
-                return <li>
+                return <li key={ ink.id }>
                     <Ink ink={ ink.id } />
                 </li>
             })
