@@ -1,0 +1,12 @@
+import data from '@/data/tarotDecks.js'
+import TarotDeck from '@/components/TarotDeck/TarotDeck'
+
+export const meta = {
+    title: 'Tarot Decks',
+    tags: ['personal', 'occult'],
+}
+
+
+{ data.map(deck => {
+    return <TarotDeck deck={ deck } />
+})}
