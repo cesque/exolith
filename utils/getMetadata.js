@@ -7,37 +7,26 @@ export function getMetadata(title, type) {
 
     let url = process.env.VERCEL_URL ? `https://${ process.env.VERCEL_URL }` : `http://localhost:3000`
 
-    let meta = {
-        og: {
+    return {
+        title: pageTitle,
+        description: description,
+        icons: {
+            icon: '/favicon.svg',
+        },
+        openGraph: {
             title: pageTitle,
+            description: description,
             type: type,
-            image: `${ url }/api/og?${ imageParams.toString() }`,
-            'image:width': 1000,
-            'image:height': 500,
-            description: description  
+            images: [{
+                url: `${ url }/api/og?${ imageParams.toString() }`,
+                width: 1000,
+                height: 500,
+            }],
         },
         twitter: {
             card: 'summary_large_image',
             site: '@cesque',
-        }
+        },
+        themeColor: '#000000',
     }
-
-    return <> 
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#000000" />
-        { 
-            Object.keys(meta).map(section => {
-                return Object.keys(meta[section]).map(name => {
-                    let content = meta[section][name]
-                    let nameText = `${section}:${name}` 
-
-                    if(section == 'og') {
-                        return <meta property={ nameText } content={ content } />
-                    } else {
-                        return <meta name={ nameText } content={ content } />
-                    }
-                })
-            }).flat()
-        }
-    </>
 }
