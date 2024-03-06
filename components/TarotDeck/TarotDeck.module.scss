@@ -1,13 +1,13 @@
 @import '@/styles/breakpoints.scss';
 
 .deck {
-    margin: 0 var(--spacing-medium);
+    margin: var(--spacing-medium);
 
     display: flex;
     flex-direction: column;
     gap: var(--spacing-small);
 
-    max-width: var(--width-wide);
+    max-width: var(--width-full) !important;
 }
 
 .name {
@@ -20,15 +20,19 @@
     gap: var(--spacing-small);
     height: auto;
     
-    @media (min-width: $breakpoint-medium) {
+    @media (min-width: $breakpoint-small) {
         flex-direction: row;
-        height: 400px;
+        flex-wrap: wrap;
+        // height: 400px;
     }
 }
 
 .image {
-    height: 100%;
     width: auto;
+
+    @media (min-width: $breakpoint-small) {
+        height: 400px;
+    }
 }
 
 /* .type {
@@ -37,3 +41,7 @@
     color: var(--color-background);
     padding: 0 8px;
 } */
+
+.noDeckBox {
+    flex-grow: 1;
+}
