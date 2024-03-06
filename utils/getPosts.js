@@ -36,7 +36,8 @@ export default async function getPosts() {
     let tags = [...new Set(posts.map(post => post.meta.tags).flat())]
 
     _data = {
-        posts,
+        allPosts: posts,
+        posts: posts.filter(post => !post.meta.hidden),
         tags,
     }
 

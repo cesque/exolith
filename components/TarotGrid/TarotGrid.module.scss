@@ -1,7 +1,7 @@
 @import '@/styles/breakpoints.scss';
 
 .grid {
-    max-width: var(--width-full);
+    max-width: var(--width-full) !important;
     padding: var(--spacing-medium);
 
     display: grid;
