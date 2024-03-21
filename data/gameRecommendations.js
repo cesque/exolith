@@ -1,4 +1,4 @@
-export default [
+const games = [
     { name: "Kingdom: New Lands", link: "https://store.steampowered.com/app/496300/", id: 496300, description: "roguelike village-builder thing where you play as the king or queen" },
     { name: "Wizard of Legend", link: "https://store.steampowered.com/app/445980/", id: 445980, description: "a great little top-down roguelike where you mix and match spells." },
     { name: "Hidden Folks", link: "https://store.steampowered.com/app/435400/", id: 435400, description: "like Where's Wally, but interactive. check the screenshots!" },
@@ -105,7 +105,7 @@ export default [
     { name: "Microsoft Flight Simulator", link: "https://store.steampowered.com/app/1250410/", id: 1250410, description: "your computer will cry and catch on fire, but at least you get to fly around your hometown" },
     { name: "Cathedral 3-D", link: "https://store.steampowered.com/app/1091590/", id: 1091590, description: "your heart is in this box and if the enemies get it you'll die, so shoot em all before you get overwhelmed" },
     { name: "Ace Combat 7: Skies Unknown", link: "https://store.steampowered.com/app/502500/", id: 502500, description: "another game which i didn't play enough, but lives rent-free in my head. bonkers but super cool story?" },
-    { name: "Gunfire Reborn", link: "https://store.steampowered.com/app/1217060/", id: 1217060, description: "feels like it should be jank, but is actually a really fun and engaging third person shooter" },
+    { name: "Gunfire Reborn", link: "https://store.steampowered.com/app/1217060/", id: 1217060, description: "feels like it should be jank, but is actually a really fun and engaging third person shooter. HIGHLY recommend" },
     { name: "Please, Don't Touch Anything", link: "https://store.steampowered.com/app/354240/", id: 354240, description: "unlock all the endings by solving cryptic puzzles. *really* well executed (also it's Loop Hero devs)" },
     { name: "Please, Don't Touch Anything 3D", link: "https://store.steampowered.com/app/529590/", id: 529590, description: "PDTA but in 3D - with some little tweaks and changes to mix it up. you can even play in VR!" },
     { name: "Minion Masters", link: "https://store.steampowered.com/app/489520/", id: 489520, description: "really addictive cardbuilding PvP moba-creep thing: summon units and watch em walk at the enemy's units" },
@@ -139,4 +139,17 @@ export default [
     { name: "Boneraiser Minions", link: "https://store.steampowered.com/app/1944570/", id: 1944570, description: "Vampire Survivors, but with surprising depth. much combining of units, and lots of meta-progression. plus it has a card minigame too???" },
     { name: "Battlefield 2042", link: "https://store.steampowered.com/app/1517290/", id: 1517290, description: "honestly i think this game has basically always been good. just play Sundance and wingsuit everywhere!" },
     { name: "Omega Strikers", link: "https://store.steampowered.com/app/1869590/", id: 1869590, description: "kinda like Battlerite mixed with air hockey? pretty damn fun" },
+
+    { name: "Your Only Move Is HUSTLE", link: "https://store.steampowered.com/app/2212330/", id: 2212330, description: "turnbased fighting game; toribash but 2d; it's those old flash animations of stick figures fighting, but you can play it" },
+    { name: "Dwarf Fortress", link: "https://store.steampowered.com/app/975370/", id: 975370, description: "manage a colony of dwarfs. intricately detailed, a complete timesink, and an amazing example of emergent gameplay" },
+    { name: "Risk of Rain Returns", link: "https://store.steampowered.com/app/1337520/", id: 1337520, description: "they just kinda released Risk of Rain 1 again but with more stuff" },
+    { name: "(the) Gnorp Apologue", link: "https://store.steampowered.com/app/1473350/", id: 1473350, description: "short (~8hr) idle game, which is great because it doesn't overstay its welcome. saw it likened to PoE or a good roguelike run" },
+    { name: "Slice & Dice", link: "https://store.steampowered.com/app/1775490/", id: 1775490, description: "this game is *almost* too hard for me to enjoy, but it's got so much combinatoric roguelike nonsense that i still respect it a lot" },
+    { name: "Tiny Rogues", link: "https://store.steampowered.com/app/2088570/", id: 2088570, description: "quickly risen to be one of my favourite roguelikes. tons of build-crafting, and lands perfectly on the difficulty spectrum" },
 ]
+
+const sortedGames = games.sort((a, b) => {
+    return a.name.localeCompare(b.name)
+})
+
+export default sortedGames
