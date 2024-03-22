@@ -31,7 +31,9 @@ export default async function getPosts() {
         })
     }
 
-    posts.sort((a, b) => Date.parse(b.info.created) - Date.parse(a.info.created))
+    // sorting by date doesn't really work because the files are always brand new on vercel server
+    // posts.sort((a, b) => Date.parse(b.info.created) - Date.parse(a.info.created))
+    posts.sort((a, b) => a.slug.localeCompare(b.slug))
 
     let tags = [...new Set(posts.map(post => post.meta.tags).flat())]
 
