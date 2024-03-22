@@ -13,6 +13,7 @@ import Pre from '@/markdownComponents/Pre/Pre'
 import Table from '@/markdownComponents/Table/Table'
 import YouTube from '@/components/YouTube/YouTube'
 import Bookmark from '@/components/Bookmark/Bookmark'
+import IFrame from '@/markdownComponents/IFrame/IFrame'
 import Sigil from '@/components/Sigil/Sigil'
 import Video from '@/components/Video/Video'
 import Ink from '@/components/Ink/Ink'
@@ -41,8 +42,6 @@ export async function generateStaticParams() {
 export default async function PostPage({ params: { slug }, searchParams }) {
     let { default: PostContent, meta, info } = await getPost(slug)
 
-    console.log(meta)
-
     let components = {
         h1: H1,
         h2: H2,
@@ -58,6 +57,7 @@ export default async function PostPage({ params: { slug }, searchParams }) {
         table: Table,
         Table: Table,
 
+        IFrame,
         Image,
         GameRecommendationList,
         TTRPGList,
