@@ -41,7 +41,6 @@ export default function MinesweeperGraph() {
     }
 
     let pb = +pbs[pbs.length - 1].duration
-    console.log({ pb })
     
     // ----- generate average line -----
     const window = 50

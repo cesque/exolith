@@ -4,9 +4,9 @@ import { DateTime } from 'luxon'
 let pb = Infinity
 let latest = '1970-01-01'
 
-for (let solve of solves) {
+for (const solve of solves) {
     if (solve.duration < pb) {
-        pb = solve.duration / 1000
+        pb = solve.duration
     }
 
     if (solve.finishedAt.localeCompare(latest) > 0) {
@@ -15,8 +15,9 @@ for (let solve of solves) {
 }
 
 const latestDate = DateTime.fromISO(latest).toISODate()
+pb = pb / 1000
 
 export {
     pb,
-    latestDate
+    latestDate,
 }
