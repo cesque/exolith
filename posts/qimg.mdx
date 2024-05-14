@@ -24,7 +24,7 @@ The steps of the algorithm are as follows: first, split the image into n×n boxe
 The `.qimg` file format is designed to store an image which has been compressed in this way. The format begins with a 16 byte header:
 
 1. **8 bytes**: the format's magic bytes `[99, 115, 113, 47, 113, 105, 109, 103]`, equivalent to the ASCII character codes of the string `csq/qimg`.
-2. **2 bytes**: the format's version number; the first byte is the major number and the second byte is the minor number. The current format uses a version of 0.1.
+2. **2 bytes**: the format's version number; the first byte is the major number and the second byte is the minor number. The current format uses a version of 0.2.
 3. **1 byte**: the box size for the image.
 4. **2 bytes**: the size of the image, with 1 byte for width and 1 byte for height. These values are the size of the image in boxes, and to get the actual pixel dimensions they should be multiplied by the box size.
 5. **3 bytes**: 24 bit big-endian number of boxes in the image.
@@ -34,11 +34,16 @@ After the header, there are as many boxes as described in the header. Each box i
 1. **2 bytes**: the box's position, with 1 byte for width and 1 byte for height. Again, these should be multiplied by the box size if you want the actual pixel positions.
 2. **3 bytes**: the box's light colour, with 1 byte for each of the red, green and blue components of the colour.
 3. **3 bytes**: the box's dark colour, with 1 byte for each of the red, green and blue components of the colour.
-4. **box size²** bytes: the pixels of the box, where a 1 indicates that the box's light colour should be used and a 0 indicates that the box's dark colour should be used.
+4. **ceil(box size² / 8)** bytes: the pixels of the box, where a 1 indicates that the box's light colour should be used and a 0 indicates that the box's dark colour should be used. Each pixel is represented as a single bit; if the total number of pixels is not divisible by 8, the remaining values are set to 0.
+
+> **Note**: **qimg v0.1** didn't use bit packing, and so each pixel of the image gets its own byte, despite the fact the values are constrained to 0 (dark) and 1 (light). This meant that a box instead required **box size²** bytes to store the pixel data.
 
 While boxes can be stored in any order since their position is encoded into their individual headers, the pixels within a box are represented from top-left, proceeding along the X axis. For a box size of 8, the pixel at index 0 would be {`{x: 0, y: 0}`}, the pixel at index 1 would be {`{x: 1, y: 0}`} and the pixel at index 8 would be {`{x: 0, y: 1}`}.
 
 ## CLI conversion utility
+
+> **Note**: the CLI for **qimg** is outdated and uses the **v0.1** format without bit packing. There is currently no CLI compatible with **v0.2**, but you can export **v0.2** files from the [web demo](https://qimg-demo.vercel.app/).
+
 <Bookmark link="https://github.com/cesque/qimg"
     image="https://opengraph.githubassets.com/cfc2de60634fa4a9c326df6045c5448d0af959e375a5c5437dc8954535bfda19/cesque/qimg"
     title="GitHub - cesque/qimg"
@@ -74,9 +79,13 @@ The total number of boxes in compression is `floor(image.width / box_size) * flo
 
 Again, this is just an experiment and not an actually useful compression method!
 
+> **Note**: these estimates in compression are true for **qimg v0.1**, which didn't utilise bit packing for its box data. The total data required to store a box's pixels in **v0.2** is ⅛ of the total for **v0.1**.
+
 ## Thoughts & improvements
 
 An obvious improvement to the file format which affects the compression ratio by a lot is to bit-pack the pixel array within a box. Currently, 1 byte is being allocated per-pixel to a value that can only ever be 0 or 1. This leaves 7 bits of wasted space; we can more efficiently use each bit in a byte of our file to represent each pixel. Some extra padding may need to occur when the total number of pixels does not divide neatly by the amount of bits in a byte, but this is still always an equal or lower amount of wasted bits than the current implementation.
+
+> **Note**: the above bit packing solution has been implemented as part of **qimg v0.2**.
 
 An idea for an evolution of this algorithm would be to add more colours per box. The boxes can currently be seen as having a palette of 2 colours, and each pixel has a palette index. We could split the luminosity up into more divisions and have, say, 4 colours ranging from lowest luminosity to highest. The memory requirement for each box would increase by 3 bytes for every colour we added. In the current implementation, there would not be any extra space required for the pixels because each pixel could already store a palette value up to 255, but the above space-packing fix was implemented, the memory requirement for a pixel would be log2 of the number of palette entries required.
 
@@ -95,4 +104,15 @@ I personally believe that this algorithm would produce terrible-looking results,
 ---
 
 ### Update: demo site
-**2024-05-09**: a few years later I'm thinking about this algorithm, as well as the gradient version mentioned above for which I have completed a proof-of-concept, when I find a half-finished implementation of a demo site written in React to load your own images and play around with different box sizes. I took a couple of hours to fix up and finish the site, and stuck it on Vercel. You can now play around with `qimg` on the demo site at [https://qimg-demo.vercel.app/](https://qimg-demo.vercel.app/).
+**2024-05-09**: a few years later I'm thinking about this algorithm, as well as the gradient version mentioned above for which I have completed a proof-of-concept, when I find a half-finished implementation of a demo site written in React to load your own images and play around with different box sizes. I took a couple of hours to fix up and finish the site, and stuck it on Vercel. You can now play around with **qimg** on the demo site at [https://qimg-demo.vercel.app/](https://qimg-demo.vercel.app/).
+
+### Update: qimg v0.2
+**2024-05-14**: as part of a big refactor of my image compression algorithm projects, I:
+
+1. rewrote **qimg** in TypeScript
+2. published an [npm package](https://www.npmjs.com/package/@cesque/image-compression-algorithms) containing the compression algorithms I have created so far, called `@cesque/image-compression-algorithms`
+3. implemented the bit-packing strategy mentioned above, vastly reducing file sizes due to removing wasted bits and bumping the version to **v0.2**.
+
+The demo site can load and display both **v0.1** and **v0.2** files, but only outputs **v0.2**.
+
+The code thereof is available on GitHub at [cesque/image-compression-algorithms](https://github.com/cesque/image-compression-algorithms).
