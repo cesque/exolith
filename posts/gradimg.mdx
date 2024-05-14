@@ -1,0 +1,79 @@
+export const meta = {
+    title: 'gradimg',
+    tags: ['design', 'programming'],
+}
+
+**gradimg** is an image compression algorithm and filetype I created, after experimenting initially with image compression with [qimg](qimg). A [demo website](https://qimg-demo.vercel.app/) is available (designed for desktop only).
+
+After the experimentation of **qimg**, I mused over how I could take the approach and extend it. The general approach for **gradimg** was theorised pretty much immediately once I finished initial work on **qimg**: instead of storing pixels for each box (even palette-indexed pixels, as in **qimg**), simply compute a gradient which roughly represents the contents of the box, and then store only the data necessary to recreate that gradient.
+
+<Image src="https://cesque.com/storage/24/05/14/186866573553.jpeg" full />
+
+## Algorithm
+
+Most of the initial steps of **gradimg** are identical to **qimg**. The algorithm has 2 parameters: *box size* (as in **qimg**) which is used to slice the source image into 'boxes', and *gradient scale**, which is used to stretch or squash the gradients which make up the compressed image. As with **qimg**, the edges of the source image will be cropped to ensure the dimensions of the image are multiples of *box size*.
+
+The steps of the algorithm are as follows: first, split the image into n×n boxes, then for each box:
+
+1. Calculate the average luminance of the pixels within the box
+2. Find the average colour of all pixels whose luminance is lower than the average within that box; this is the box's **dark colour**.
+3. Find the average colour of all pixels whose luminance is higher than the average within that box; this is the box's **light colour**.
+4. Find the average position of all pixels whose luminance is lower than the average within that box; this is the box's **dark stop position**.
+5. Find the average position of all pixels whose luminance is higher than the average within that box; this is the box's **light stop position**.
+
+To display the image, for each box: draw a gradient cropped to the bounds of the box, from the **dark colour** at the **dark stop position** within the box, to the **light colour** at the **light stop position** within the box. Additionally, the stop positions should be scaled towards or away from the center of the box based on the value of the *gradient scale* parameter.
+
+> **Note**: the gradient scale parameter was added to the algorithm & file format in **v0.2**, but since there wasn't really a way to generate **v0.1** files aside from in the development phase, I'm not going to make a big deal of distinguishing between them.
+
+> **Note**: now I think of, I'm not actually convinced that using the *box center* as the scale origin is the correct behaviour; it could be that I need to make a new version which uses the midpoint between the two stop positions instead. My intuition is that this probably won't affect the end result too much either way though.
+
+If the dark stop is determined as being null (denoted from the file format as `x = 0, y = 0`) then, instead the light colour is used to draw the entire box, Similarly, if the light stop is null, the dark colour is used to draw the entire box. 
+
+<Image src="https://cesque.com/storage/24/05/14/105860320433.jpg" wide caption="the test input, apples.jpg, compressed at box sizes 16, 32, 64, 128 (with default gradient scale of 0.5)" />
+
+## File format (`.gradimg`)
+
+The `gradimg` file format stores a **gradimg** compressed image. The format starts with a header consisting of:
+
+- **8 bytes**: the format's magic bytes `[99, 115, 113, 47, 103, 114, 97, 100]`, equivalent to the ASCII character codes of the string `csq/grad`.
+2. **2 bytes**: the format's version number; the first byte is the major number and the second byte is the minor number. The current format uses a version of 0.2.
+3. **1 byte**: the gradient scale between 0 and 1 (multiplied by 255 to map to the possible values of a byte). The gradient scale cannot be 0.
+4. **1 byte**: the box size for the image.
+5. **2 bytes**: the size of the image, with 1 byte for width and 1 byte for height. These values are the size of the image in boxes, and to get the actual pixel dimensions they should be multiplied by the box size.
+6. **3 bytes**: 24 bit big-endian number of boxes in the image.
+
+After the header, there are as many boxes as described in the header. Each box is represented in memory as follows:
+
+1. **2 bytes**: the box's position, with 1 byte for width and 1 byte for height. Again, these should be multiplied by the box size if you want the actual pixel positions.
+2. **3 bytes**: the box's light colour, with 1 byte for each of the red, green and blue components of the colour.
+3. **3 bytes**: the box's dark colour, with 1 byte for each of the red, green and blue components of the colour.
+4. **1 byte**: the x position of the box's light gradient stop.
+5. **1 byte**: the y position of the box's light gradient stop.
+6. **1 byte**: the x position of the box's dark gradient stop.
+7. **1 byte**: the y position of the box's dark gradient stop.
+
+For the stop positions in the last 4 bytes, the special values of `x = 0, y = 0` are used to denote a null value, whereby the box should be drawn with a single solid colour.
+
+## Results
+
+<Image src="https://cesque.com/storage/24/05/14/039563159809.jpg" wide />
+
+My prediction for **gradimg** was that it would "produce terrible-looking results" that were "terrible-looking in an interesting way". In fact, I think it produces quite decent-looking results, considering the extreme lack of data available to reconstruct the image.
+
+It suffers a lot more from lost of specific details than **qimg**. The below image shows the `chicago.jpg`, compressed with **gradimg** (box size 16) on the left, and with **qimg** (box size 32) on the right.
+
+<Image src="https://cesque.com/storage/24/05/14/086548750312.jpg" wide />
+
+Even with a smaller box size, the text is unreadable. However, the benefit of storing much less data to recreate a box, and therefore the whole image, is reduced file size. The below image shows the `apples.jpg` test image compressed with **gradimg** (box size 32) on the left, and with **qimg** (box size 32) on the right. Both images are identifiably of apples, but the **gradimg** version is 10× smaller in file size.
+
+<Image src="https://cesque.com/storage/24/05/14/097732228844.jpg" wide />
+
+While I don't think there's any real-life use case for **gradimg** (or **qimg** for that matter), comparing the two is very illuminating and it's also extremely interesting to explore exactly how little data you need to store in order to recreate an image. The left image above, for example, is reminiscent of an image scaled down very small - you can consider each box to be equivalent to a pixel in such an image - and yet the stripes on the table cloth in the bottom left are recreated quite accurately.
+
+## Extension: `gradrgb`
+
+**gradrgb** is a modified version of **gradimg**. The difference is that, instead of storing a light and dark color and the gradient thereof, **gradrgb** stores constituent red, green and blue gradients for a given box, and composites them to recreate the box when rendering the image.
+
+I expected this to allow for better representiation of the underlying image, but in reality the results are extremely similar to the normal **gradimg** algorithm.
+
+<Image src="https://cesque.com/storage/24/05/14/494137735320.jpeg" wide />

@@ -21,6 +21,7 @@ The steps of the algorithm are as follows: first, split the image into n×n boxe
 4. For each pixel, instead of storing an RGB colour, we merely store whether that pixel is 'light' or 'dark'. If its luminance is below the box's average, we use the box's dark colour, and if its luminance is above the box's average, we use the box's light colour.
 
 ## File format (`.qimg`)
+
 The `.qimg` file format is designed to store an image which has been compressed in this way. The format begins with a 16 byte header:
 
 1. **8 bytes**: the format's magic bytes `[99, 115, 113, 47, 113, 105, 109, 103]`, equivalent to the ASCII character codes of the string `csq/qimg`.
@@ -100,6 +101,8 @@ It would be really interesting to test the two strategies described above to see
 My final idea for another iteration on this idea is a new algorithm working on the same basic principle of dividing the image up into boxes and iterating across them. The algorithm would generate a 2-colour gradient representing each box. The gradient would describe 2 colours, an angle and 2 stop positions to shift and scale the gradient correctly. No pixel data would be stored, so each box could be fully described using only 9 bytes.
 
 I personally believe that this algorithm would produce terrible-looking results, but hopefully at least terrible-looking in an interesting way!
+
+> **Note**: the above algorithm is now available; read my [full writeup](gradimg) on the creation of **gradimg**. Good news: it actually doesn't look terrible!
 
 ---
 
