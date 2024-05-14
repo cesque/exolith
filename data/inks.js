@@ -60,6 +60,11 @@ export default [
         color: 'rgb(255 155 194)',
     },
     {
+        id: 'sailor shikiori miruai',
+        name: 'Sailor Shikiori Miruai',
+        color: 'rgb(44 47 14)',
+    },
+    {
         id: 'diamine passion red',
         name: 'Diamine Passion Red',
         color: 'rgb(255 0 0)',
