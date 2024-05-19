@@ -1,0 +1,14 @@
+export const meta = {
+    title: 'Everyman',
+    tags: ['web', 'movies', 'programming', 'personal'],
+}
+
+I got frustrated that the website for the Everyman Cinema doesn't easily let you see every film they have scheduled (in contrast with the Vue website, which is the other main cinema I visit). To that end, I wrote a web app which shows all the upcoming movies and their schedules for my local theatre.
+
+It also periodically sends out a newsletter to my personal email, detailing which movies have been added since the last email was sent.
+
+<Image src="https://cesque.com/storage/24/05/19/290663999007.png" wide />
+
+The code for the site is private, since Everyman Cinema doesn't offer a public API as far as I could see, and so the data fetching does some janky things to retrieve the data from their site (it's not web scraping, don't worry). The data from this is heavily cached to prevent fetching it too often.
+
+The app is built on Next.js (using React Server Components), using Vercel KV to store data for diffing the results and computing which movies have been added since the data was last fetched.
