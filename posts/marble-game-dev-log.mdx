@@ -3,6 +3,10 @@ export const meta = {
     tags: ['programming', 'games'],
 }
 
+## 2024-06-13
+
+Finished off some WIP code I had for rotating components in the editor. This was a pain since I thought I had a bug with positioning the ports of a component when it was rotated, when what I *really* had was a bug with drawing port positions in Select Mode in the editor (they were using the screen bounds of the component, which now is not completely connected to the position after rotating; now instead we just recompute the position of the port in screen space, and that works fine). Lost a few hours (!!!) to that, and honestly I'm not 100% happy with the code for rotating  but it works, and that's the important thing.
+
 ## 2023-05-07
 
 World map is coming along; you can load and edit levels and theoretically save them? Although the saving code is very dodgy with regards to file paths and stuff. I'm not sure how I'm going to solve that, if I'm including the level JSON files in the repo but also allowing them to be saved in the editor...
