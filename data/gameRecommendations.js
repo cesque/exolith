@@ -70,7 +70,7 @@ const games = [
     { name: "Tomb of Tyrants", link: "https://store.steampowered.com/app/340360/", id: 340360, description: "10000000/YMBAB-like, but with some extra mechanics which i understand to varying degrees" },
     { name: "ShootMania Storm", link: "https://store.steampowered.com/app/229870/", id: 229870, description: "difficult to recommend, but i love it's strategic yet frenetic gameplay. TERRIBLE menus, good lord. and lots of french people" },
     { name: "Wilmot's Warehouse", link: "https://store.steampowered.com/app/839870/", id: 839870, description: "organise abstract boxes and get very stressed. also, play with a friend!" },
-    { name: "Slasher's Keep", link: "https://store.steampowered.com/app/598060/", id: 598060, description: "billboarded enemies and random loot and abig dungeon to explore. pass down some spare loot to your future selves!" },
+    { name: "Slasher's Keep", link: "https://store.steampowered.com/app/598060/", id: 598060, description: "billboarded enemies and random loot and a big dungeon to explore. pass down some spare loot to your future selves!" },
     { name: "Spin Rhythm XD", link: "https://store.steampowered.com/app/1058830/", id: 1058830, description: "great rhythm game, equally great song selection. wish i had a cool custom controller :(" },
     { name: "Geometry Arena", link: "https://store.steampowered.com/app/1255650/", id: 1255650, description: "roguelike geometry wars, where you'll get strong enough to kill god" },
     { name: "ROCKETSROCKETSROCKETS", link: "https://store.steampowered.com/app/289760/", id: 289760, description: "frantic midair 2d space battles. if you got friends over, play this" },
