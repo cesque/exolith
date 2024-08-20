@@ -146,6 +146,10 @@ const games = [
     { name: "(the) Gnorp Apologue", link: "https://store.steampowered.com/app/1473350/", id: 1473350, description: "short (~8hr) idle game, which is great because it doesn't overstay its welcome. saw it likened to PoE or a good roguelike run" },
     { name: "Slice & Dice", link: "https://store.steampowered.com/app/1775490/", id: 1775490, description: "this game is *almost* too hard for me to enjoy, but it's got so much combinatoric roguelike nonsense that i still respect it a lot" },
     { name: "Tiny Rogues", link: "https://store.steampowered.com/app/2088570/", id: 2088570, description: "quickly risen to be one of my favourite roguelikes. tons of build-crafting, and lands perfectly on the difficulty spectrum" },
+
+    { name: "ANIMAL WELL", link: "https://store.steampowered.com/app/813230/", id: 813230, description: "a top-tier platforming+puzzling metroidvania, with layers upon layers of secrets. also there's a scary dog" },
+    { name: "Rabbit and Steel", link: "https://store.steampowered.com/app/2132850/", id: 2132850, description: "all the fun/adject panic of FFXIV raiding (or so i'm told) but 4 player with cute catgirls" },
+    { name: "The Talos Principle 2", link: "https://store.steampowered.com/app/835960/", id: 2132850, description: "more puzzles, more mechanics, but surprisingly, also quite a lot more story" },
 ]
 
 const sortedGames = games.sort((a, b) => {
