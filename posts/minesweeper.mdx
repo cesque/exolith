@@ -14,7 +14,119 @@ This is a graph of my completed Expert solves since then, as of { latestDate }:
 
 The red points+line represent my PB, and the blue line is an average of 50 (drop the highest 2, since there are some major outliers which aren't shown off the top of the graph!). The slightly emphasised grey line shows the **100s** mark, which was my goal for a long time until I finally reached it on 2023-10-11, which also spurred me on to finally create this page and graph my progress. You can see that I spent over a month sitting on a PB of **100.061**, which was so close to my goal of breaking sub-100...
 
-The site on which I play doesn't give you access to any API for retrieving game history, so I somewhat reverse engineered how that data is fetched in order to get my results. Pasting the following code into the dev console collects all your results as you switch between all the pages of results.
+The site on which I play doesn't give you access to any API for retrieving game history, so I somewhat reverse engineered how that data is fetched in order to get my results. Running the following code in the console gathers all of the results from the internal API. (Note: the last number in the line `socket.emit('request', [messageType, args, 1200, 667])` might need to be updated by checking an existing request to the API in the Websockets tab in dev tools; this might be fixable later).
+
+```
+;(() => {
+    const auth = JSON.parse(window.authreq.response)
+
+    const params = new URLSearchParams({
+        authKey: auth.authKey,
+        session: auth.session,
+        userId: auth.user.id,
+        EIO: '4',
+        transport: 'websocket'
+    })
+
+    const socket = io(`wss://main7.${window.location.host}`, {
+        query: params.toString(),
+        transports: ['websocket'],
+        path: '/mine-websocket',
+    })
+
+    socket.on('connect', () => {
+        console.log('Socket connection established')
+
+        setTimeout(() => {
+            emitGameHistoryRequest(0)
+        }, 1000);
+    })
+
+    socket.on('response', response => {
+        const [
+            _unknown0,
+            _unknown1,
+            data,
+        ] = response
+
+
+        const [
+            path,
+            gameList,
+            totalGames,
+        ] = data
+
+        onGameHistoryResponse(gameList, totalGames)
+    })
+
+    socket.on('error', error => {
+        console.error('Socket error:', error)
+    })
+
+    socket.on('disconnect', reason => {
+        console.log('Socket connection closed:', reason)
+    })
+
+    function emitGameHistoryRequest(offset, count = 10) {
+        const messageType = `StatController.getStatWsAction`
+        const args = [
+            '/my-games',
+            1,
+            1,
+            {
+                level: 3,
+                sizeX: 30,
+                sizeY: 16,
+                mines: 99,
+                nfOnly: 0,
+                sortBy: 'duration',
+                season: '',
+                isAllSizes: false,
+                isAllGames: false,
+                isNoReplays: false,
+                userId: null
+            },
+            offset,
+            count,
+            false,
+            -60
+        ]
+
+        socket.emit('request', [messageType, args, 1200, 667])
+    }
+
+    let allGames = []
+    let currentOffset = 0
+
+    const timeoutRandomisation = 300
+
+    function onGameHistoryResponse(games, totalGames) {
+        allGames = allGames.concat(games);
+
+        const percentageFetched = (allGames.length / totalGames) * 100;
+        const estimatedMillisLeft = ((totalGames - allGames.length) / games.length) * (1000 + (timeoutRandomisation / 2));
+        const estimatedSecondsLeft = Math.ceil(estimatedMillisLeft / 1000)
+
+        console.log(`${allGames.length}/${totalGames} (${percentageFetched.toFixed(0)}%) - ETA ${estimatedSecondsLeft} seconds.`);        
+
+        if (currentOffset < totalGames) {
+            currentOffset += games.length
+
+            setTimeout(() => {
+                emitGameHistoryRequest(currentOffset)
+            }, 1000 + Math.random() * timeoutRandomisation)
+        } else {
+            console.log(allGames)
+        }
+    }
+})();
+```
+
+---
+
+> A previous version of this script, before the code was changed so this couldn't be used any more, is as follows:
+
+Pasting the following code into the dev console collects all your results as you switch between all the pages of results.
 
 ```
 ;(() => {

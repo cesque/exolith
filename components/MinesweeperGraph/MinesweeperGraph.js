@@ -40,7 +40,13 @@ export default function MinesweeperGraph() {
         }
     }
 
-    let pb = +pbs[pbs.length - 1].duration
+    let pb = pbs[pbs.length - 1]
+
+    pbs.push({
+        ...pb,
+        dateTime: data[data.length - 1].dateTime,
+        r: 0,
+    })
     
     // ----- generate average line -----
     const window = 50
@@ -65,13 +71,14 @@ export default function MinesweeperGraph() {
     }
 
     // ----- generate ticks for x (time) axis -----
-    let endDate = data[data.length - 1].dateTime.plus({ months: 1 }).endOf('month')
+    let endDate = data[data.length - 1].dateTime.plus({ months: 1 }).startOf('month')
     let xTickDate = data[0].dateTime.startOf('month')
-    let xTickDates = []
-    while(xTickDate < endDate) {
+    let xTickDates = [xTickDate]
+    while(xTickDate <= endDate) {
+        xTickDate = xTickDate.plus({ months: 3 })
         xTickDates.push(xTickDate)
-        xTickDate = xTickDate.plus({ months: 1 })
     }
+
     let xTicks = xTickDates.map(tick => tick.toMillis())
 
     function formatXTicks(value) {
