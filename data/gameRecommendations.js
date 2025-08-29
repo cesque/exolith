@@ -150,6 +150,10 @@ const games = [
     { name: "ANIMAL WELL", link: "https://store.steampowered.com/app/813230/", id: 813230, description: "a top-tier platforming+puzzling metroidvania, with layers upon layers of secrets. also there's a scary dog" },
     { name: "Rabbit and Steel", link: "https://store.steampowered.com/app/2132850/", id: 2132850, description: "all the fun/adject panic of FFXIV raiding (or so i'm told) but 4 player with cute catgirls" },
     { name: "The Talos Principle 2", link: "https://store.steampowered.com/app/835960/", id: 2132850, description: "more puzzles, more mechanics, but surprisingly, also quite a lot more story" },
+    { name: "Blue Prince", link: "https://store.steampowered.com/app/1569580/", id: 1569580, description: "really unique roguelike+myst-ish puzzle game, which also has an puzzle-solving end-game that seems to extend indefinitely" },
+    { name: "Nubby's Number Factory", link: "https://store.steampowered.com/app/3191030/", id: 3191030, description: "pachinko roguelike with an edutainment visual style. let it be known i championed this from the start" },
+    { name: "Digseum", link: "https://store.steampowered.com/app/3361470/", id: 3361470, description: "a cute little incremental game that doesn't overstay its welcome" },
+    { name: "Nodebuster", link: "https://store.steampowered.com/app/3107330/", id: 3107330, description: "a short but sweet incremental game that has a BYTEPATH vibe" },
 ]
 
 const sortedGames = games.sort((a, b) => {
